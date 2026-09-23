@@ -28,7 +28,7 @@ MAP = os.path.join(SITE, 'map.html')
 OUT = os.path.join(SITE, 'districts')
 
 ORIGIN = 'https://studenttrustee.net'
-LAST_VERIFIED = '2026-09-22'      # keep in step with index.html
+LAST_VERIFIED = '2026-09-23'      # keep in step with index.html
 
 REGIONS = ['I', 'II', 'III', 'IV', 'V', 'VI', 'VII', 'VIII', 'IX', 'X']
 REGION_NAME = {
