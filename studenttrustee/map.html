@@ -1,0 +1,996 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+<meta charset="utf-8">
+<meta name="viewport" content="width=device-width, initial-scale=1">
+<title>Student Trustee Map | All 72 California Community College Districts</title>
+<meta name="description" content="An interactive map of all 72 California community college districts, their boundaries, and the student trustees who represent them — grouped by SSCCC Region I–X.">
+<meta property="og:type" content="website">
+<meta property="og:site_name" content="studenttrustee.net">
+<meta property="og:url" content="https://studenttrustee.net/map">
+<meta property="og:title" content="California Student Trustees — District Map">
+<meta property="og:description" content="All 72 California community college districts, their real boundaries, and the student trustees who represent them — grouped by SSCCC Region I–X.">
+<meta name="twitter:card" content="summary">
+<meta name="theme-color" content="#ffffff">
+<link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/leaflet/1.9.4/leaflet.min.css">
+<style>
+  :root{
+    /* Monochrome chrome. Region hues are the only colour on the page — they carry data. */
+    --surface-1:#ffffff; --plane:#f6f6f6; --panel:#ffffff;
+    --text-primary:#0a0a0a; --text-secondary:#4a4a4a; --text-muted:#8a8a8a;
+    --rule:#e3e3e3; --ring:rgba(0,0,0,0.16); --shadow:0 1px 2px rgba(0,0,0,.06),0 8px 24px rgba(0,0,0,.09);
+    --accent:#0a0a0a; --gold:#0a0a0a; --none:#b0b0b0;
+    --r1:#eda100; --r2:#4a3aa7; --r3:#1baf7a; --r4:#9c27b0; --r5:#008300;
+    --r6:#e87ba4; --r7:#2a78d6; --r8:#eb6834; --r9:#0e8fae; --r10:#e34948;
+  }
+  *{box-sizing:border-box}
+  html,body{height:100%;margin:0}
+  body{
+    font-family:system-ui,-apple-system,"Segoe UI",sans-serif;
+    background:var(--plane); color:var(--text-primary);
+    display:flex; flex-direction:column; overflow:hidden;
+    -webkit-font-smoothing:antialiased;
+  }
+  header{
+    display:flex; align-items:center; gap:16px; padding:10px 16px;
+    background:var(--surface-1); border-bottom:1px solid var(--rule); flex:none; z-index:1200;
+    border-top:2px solid var(--text-primary);
+  }
+  .brand{display:flex;flex-direction:column;gap:1px;min-width:0}
+  .brand h1{font-size:15px;margin:0;font-weight:650;letter-spacing:-.01em;white-space:nowrap}
+  .brand p{margin:0;font-size:11.5px;color:var(--text-muted)}
+  .brand a.home{color:var(--accent);text-decoration:underline;text-underline-offset:2px;font-weight:600}
+  .brand a.home:hover{text-decoration:underline}
+  .brand .sep{opacity:.55;margin:0 2px}
+  .stats{display:flex;gap:14px;margin-left:6px}
+  .stat{display:flex;flex-direction:column;line-height:1.15}
+  .stat b{font-size:16px;font-weight:650}
+  .stat span{font-size:10.5px;color:var(--text-muted);white-space:nowrap}
+  .grow{flex:1}
+  .btn{
+    font:inherit;font-size:12.5px;color:var(--text-secondary);background:var(--panel);
+    border:1px solid var(--rule);border-radius:8px;padding:6px 11px;cursor:pointer;white-space:nowrap;
+  }
+  .btn:hover{color:var(--text-primary);border-color:var(--ring)}
+  .btn[aria-pressed="true"]{background:var(--text-primary);border-color:var(--text-primary);color:var(--surface-1);font-weight:640}
+  a.btn.navlink{text-decoration:none;display:inline-block;line-height:1.35}
+  main{flex:1;display:flex;min-height:0;position:relative}
+  aside{
+    width:340px;flex:none;background:var(--surface-1);border-right:1px solid var(--rule);
+    display:flex;flex-direction:column;min-height:0;z-index:1100;
+  }
+  .search{padding:10px 12px;border-bottom:1px solid var(--rule)}
+  .search input{
+    width:100%;font:inherit;font-size:13px;padding:8px 10px;border-radius:8px;
+    border:1px solid var(--rule);background:var(--panel);color:var(--text-primary);
+  }
+  .search input:focus{outline:2px solid var(--accent);outline-offset:-1px;border-color:transparent}
+  .legend{padding:10px 12px;border-bottom:1px solid var(--rule)}
+  .legend-head{display:flex;align-items:baseline;justify-content:space-between;margin-bottom:7px}
+  .legend-head h2{margin:0;font-size:11px;text-transform:uppercase;letter-spacing:.07em;color:var(--text-muted);font-weight:600}
+  .legend-head button{font:inherit;font-size:11px;background:none;border:none;color:var(--accent);cursor:pointer;padding:0}
+  .chips{display:grid;grid-template-columns:repeat(2,1fr);gap:4px}
+  .chip{
+    display:flex;align-items:center;gap:7px;padding:4px 6px;border-radius:7px;cursor:pointer;
+    border:1px solid transparent;background:none;font:inherit;font-size:12px;color:var(--text-secondary);text-align:left;
+  }
+  .chip:hover{background:var(--plane)}
+  .chip[aria-pressed="false"]{opacity:.35}
+  .chip .sw{width:12px;height:12px;border-radius:3px;flex:none;box-shadow:inset 0 0 0 1px var(--ring)}
+  .chip .n{margin-left:auto;font-size:11px;color:var(--text-muted);font-variant-numeric:tabular-nums}
+  .list{flex:1;overflow-y:auto;padding:6px 8px 24px}
+  .drow{
+    width:100%;text-align:left;font:inherit;background:none;border:none;cursor:pointer;
+    padding:8px 8px;border-radius:9px;display:flex;gap:9px;align-items:flex-start;
+  }
+  .drow:hover{background:var(--plane)}
+  .drow .bar{width:3px;align-self:stretch;border-radius:2px;flex:none;min-height:30px}
+  .drow .t{min-width:0;flex:1}
+  .drow .nm{font-size:13px;font-weight:600;color:var(--text-primary);display:flex;align-items:center;gap:6px}
+  .drow .sub{font-size:11.5px;color:var(--text-secondary);margin-top:2px;line-height:1.4}
+  .drow .rg{font-size:10px;color:var(--text-muted);font-weight:600;letter-spacing:.04em}
+  .drow.empty .nm{color:var(--text-muted);font-weight:500}
+  .star{color:var(--r1);font-size:11px}
+  .srcs{
+    flex:none;border-top:1px solid var(--rule);padding:9px 12px 11px;
+    font-size:10.5px;line-height:1.5;color:var(--text-muted);
+  }
+  .srcs b{color:var(--text-secondary);font-weight:600}
+  .srcs a{color:var(--text-secondary);text-decoration:none}
+  .srcs a:hover{text-decoration:underline}
+  .srcs a.home{color:var(--accent);font-weight:600;font-size:11.5px;display:inline-block;margin-bottom:3px;text-decoration:underline;text-underline-offset:2px}
+  .mapwrap{flex:1;position:relative;min-width:0}
+  #map{position:absolute;inset:0;background:var(--plane)}
+  .banner{
+    position:absolute;left:50%;transform:translateX(-50%);top:12px;z-index:900;
+    background:var(--panel);border:1px solid var(--rule);border-radius:10px;
+    padding:8px 14px;font-size:12.5px;color:var(--text-secondary);box-shadow:var(--shadow);
+    display:flex;align-items:center;gap:9px;max-width:min(560px,92%);
+  }
+  .banner.err{border-color:#d03b3b;color:var(--text-primary)}
+  .spin{width:13px;height:13px;border-radius:50%;border:2px solid var(--rule);border-top-color:var(--accent);animation:sp .7s linear infinite;flex:none}
+  @keyframes sp{to{transform:rotate(360deg)}}
+  .banner button{margin-left:4px}
+  /* map labels */
+  .rlab{
+    font-weight:700;font-size:13px;letter-spacing:.06em;color:var(--text-primary);
+    text-shadow:0 0 3px var(--surface-1),0 0 3px var(--surface-1),0 0 6px var(--surface-1);
+    white-space:nowrap;pointer-events:none;text-align:center;
+  }
+  .rlab i{display:block;font-style:normal;font-size:9.5px;font-weight:600;color:var(--text-secondary);letter-spacing:.02em}
+  .dchip{
+    display:flex;align-items:center;justify-content:center;gap:0;
+    height:20px;min-width:20px;padding:0 5px;border-radius:10px;
+    font-size:10.5px;font-weight:700;color:#fff;letter-spacing:.03em;
+    box-shadow:0 0 0 1.5px var(--surface-1),0 1px 3px rgba(0,0,0,.3);
+    white-space:nowrap;
+  }
+  .dchip.none{background:var(--none)}
+  .dchip .ct{font-size:9px;opacity:.85;margin-left:3px}
+  /* popup */
+  .leaflet-popup-content-wrapper{
+    background:var(--panel);color:var(--text-primary);border-radius:12px;
+    box-shadow:var(--shadow);border:1px solid var(--rule);
+  }
+  .leaflet-popup-tip{background:var(--panel);border:1px solid var(--rule)}
+  .leaflet-popup-content{margin:0;width:320px !important;font-size:13px;line-height:1.45}
+  .leaflet-container a.leaflet-popup-close-button{color:var(--text-muted);top:8px;right:8px}
+  .pop{padding:13px 14px 12px}
+  .pop .rg{display:inline-flex;align-items:center;gap:6px;font-size:10.5px;font-weight:700;letter-spacing:.06em;color:var(--text-secondary);text-transform:uppercase}
+  .pop .rg .sw{width:9px;height:9px;border-radius:2px;box-shadow:inset 0 0 0 1px var(--ring)}
+  .pop h3{margin:5px 0 2px;font-size:15px;font-weight:650;letter-spacing:-.01em}
+  .pop .cols{font-size:11.5px;color:var(--text-muted);margin:0 0 10px;line-height:1.45}
+  .pop .who{border-top:1px solid var(--rule);padding-top:9px;margin-top:2px}
+  .pop .who + .who{margin-top:9px}
+  .pop .who .n{font-weight:620;font-size:13.5px}
+  .pop .kv{display:grid;grid-template-columns:64px 1fr;gap:2px 8px;margin-top:5px;font-size:11.5px}
+  .pop .kv dt{color:var(--text-muted)}
+  .pop .kv dd{margin:0;color:var(--text-secondary);word-break:break-word}
+  .pop a{color:var(--accent);text-decoration:underline;text-underline-offset:2px}
+  .pop a:hover{text-decoration:underline}
+  .pop .none{color:var(--text-muted);font-size:12.5px;border-top:1px solid var(--rule);padding-top:9px}
+  /* intro card */
+  .intro{
+    position:absolute;left:50%;top:50%;transform:translate(-50%,-50%);z-index:950;
+    width:min(470px,90%);background:var(--panel);border:1px solid var(--rule);border-radius:14px;
+    box-shadow:var(--shadow);padding:22px 24px 20px;
+  }
+  .intro.off{display:none}
+  .intro h2{margin:0 0 9px;font-size:17px;font-weight:650;letter-spacing:-.015em;line-height:1.25}
+  .intro p{margin:0 0 11px;font-size:13px;line-height:1.55;color:var(--text-secondary)}
+  .intro ul{margin:0 0 13px;padding-left:17px;font-size:12.5px;line-height:1.7;color:var(--text-secondary)}
+  .intro b{color:var(--text-primary);font-weight:620}
+  .intro a{color:var(--accent)}
+  .intro .fine{font-size:11.5px;color:var(--text-muted)}
+  /* --accent flips to white in dark mode, so the label must flip with it. */
+  .btn.primary{background:var(--accent);border-color:var(--accent);color:var(--surface-1);font-weight:600;padding:8px 15px}
+  .intro .from{font-size:11.5px;color:var(--text-muted);margin-left:11px}
+  .intro .from a{color:var(--accent);text-decoration:none;font-weight:600}
+  .intro .from a:hover{text-decoration:underline}
+  .pop .hid{font-size:11.5px;color:var(--text-muted);margin-top:6px}
+  .pop .links{
+    display:flex;flex-wrap:wrap;gap:6px;margin-top:10px;border-top:1px solid var(--rule);padding-top:9px;
+  }
+  .pop .links a{
+    font-size:11.5px;font-weight:600;color:var(--accent);text-decoration:none;
+    border:1px solid var(--rule);border-radius:7px;padding:4px 8px;white-space:nowrap;
+  }
+  .pop .links a:hover{border-color:var(--accent);text-decoration:none}
+  .pop .share{
+    display:flex;gap:8px;align-items:center;border-top:1px solid var(--rule);margin-top:11px;padding-top:9px;
+  }
+  .pop .share button{
+    font:inherit;font-size:11.5px;color:var(--text-secondary);background:none;border:1px solid var(--rule);
+    border-radius:7px;padding:4px 9px;cursor:pointer;
+  }
+  .pop .share button:hover{color:var(--text-primary)}
+  /* table view */
+  .sheet{
+    position:absolute;inset:0;background:var(--surface-1);z-index:1000;display:none;
+    flex-direction:column;
+  }
+  .sheet.on{display:flex}
+  .sheet .bar{display:flex;align-items:center;gap:10px;padding:10px 14px;border-bottom:1px solid var(--rule)}
+  .sheet .bar h2{margin:0;font-size:13px;font-weight:650}
+  .sheet .scroll{overflow:auto;flex:1}
+  table{border-collapse:collapse;width:100%;font-size:12.5px}
+  th,td{text-align:left;padding:7px 12px;border-bottom:1px solid var(--rule);white-space:nowrap}
+  th{position:sticky;top:0;background:var(--surface-1);font-size:11px;text-transform:uppercase;letter-spacing:.06em;color:var(--text-muted);font-weight:600;z-index:2}
+  td.rgc{font-weight:600}
+  tbody tr:hover{background:var(--plane)}
+  .sw-dot{display:inline-block;width:8px;height:8px;border-radius:2px;margin-right:6px;vertical-align:baseline}
+  @media (max-width:860px){
+    aside{position:absolute;inset:0;width:100%;display:none}
+    aside.on{display:flex}
+  }
+  .only-narrow{display:none}
+  @media (max-width:860px){.only-narrow{display:inline-block}}
+  .unk{color:var(--text-muted)}
+
+/* ============ expression layer ============ */
+
+/* 1. Nothing is a rounded card. Edges are hairlines, not boxes. */
+.card, .door, .crow, .pri, .facts, .contact, .soc, .strip, .strip div,
+.next, ul.same li, .more a, .figure, .hero img, .pop, .intro,
+.btn, button.btn, nav a, header a.nv, .cta, .enter, .search input,
+.search button, input, .sheet, aside, .rw {
+  border-radius: 0 !important;
+  box-shadow: none !important;
+}
+
+/* 2. Type carries the structure: larger, tighter, more confident. */
+h1 { letter-spacing: -.042em !important; font-weight: 680 !important; }
+h2.big, .hero h2 { letter-spacing: -.03em !important; font-weight: 660 !important; }
+.door h3, .card .t, .crow .per h3 { letter-spacing: -.018em !important; }
+
+/* 3. Micro-labels are uppercase and letterspaced — the counterweight to big type. */
+.grp h2, main .stat span, .strip span, .eyebrow, .door .k, .crow .cl,
+.when .tag, .sub, .contact .l, .soc .l {
+  text-transform: uppercase;
+  letter-spacing: .13em !important;
+  font-size: 10px !important;
+  font-weight: 650 !important;
+}
+/* ...except where it would wreck a sentence. */
+.sub, p.sub { text-transform: none; letter-spacing: 0 !important; font-size: 13px !important;
+              font-weight: 400 !important; }
+
+/* 4. Point at one thing, everything else recedes. */
+.doors:hover .door:not(:hover),
+.cards:hover .card:not(:hover),
+ul.cmp:hover .crow:not(:hover),
+.pris:hover .pri:not(:hover),
+.socials:hover .soc:not(:hover) { opacity: .34; }
+.door, .card, .crow, .pri, .soc { transition: opacity .22s ease, border-color .22s ease; }
+
+/* 5. Hairline rules instead of borders where a full box is too much. */
+.stats { border-top: 1px solid var(--rule); border-bottom: 1px solid var(--rule); }
+
+/* 6. Buttons: flat, letterspaced, no chrome. */
+.cta, .enter, .search button {
+  text-transform: uppercase; letter-spacing: .12em; font-size: 12px !important; font-weight: 650;
+}
+.btn, button.btn, nav a { letter-spacing: .04em; }
+
+/* 6b. The map header is a toolbar: it must stay on one line. */
+header .brand { min-width: 0; }
+header .brand h1, header .brand p {
+  white-space: nowrap; overflow: hidden; text-overflow: ellipsis;
+}
+header .stat span { text-transform: none; letter-spacing: 0; }
+/* below this width the toolbar buttons need the room more than the counters do */
+
+/* 6c. Phones. The toolbar has seven controls and a phone is 390px wide, so it
+   becomes two rows: title + theme on top, then a single scrollable strip of
+   controls. Without this the strip runs off the right edge and "Show contact
+   info" — the whole point of the page — is unreachable. */
+header .bar { display: contents; }
+@media (max-width: 760px) {
+  header { flex-wrap: wrap; gap: 8px; padding: 8px 12px; }
+  header .brand { flex: 1 1 auto; }
+  header .brand h1 { font-size: 14px; }
+  header .brand p { display: none; }
+  header .grow { display: none; }
+  header .bar {
+    order: 3; flex: 1 1 100%;
+    display: flex; gap: 8px;
+    overflow-x: auto; overscroll-behavior-x: contain;
+    scrollbar-width: none; -ms-overflow-style: none;
+    margin: 0 -12px; padding: 0 12px 1px;
+  }
+  header .bar::-webkit-scrollbar { display: none; }
+  header .bar .btn { flex: none; }
+  /* Page controls come first so they fit without a swipe; the nav links are
+     what scrolls off to the right, because they matter less here. */
+  header .bar #btn-side { order: 1; }
+  header .bar #btn-table { order: 3; }
+  header .bar .navlink { order: 4; }
+  /* 44px is the tap target Apple and Google both ask for; 36 is the floor. */
+  header .btn { padding: 9px 12px; font-size: 13px; }
+  .search input { font-size: 16px; }   /* under 16px iOS Safari zooms on focus */
+}
+
+/* 7. The map's own surfaces join the ground rather than floating above it. */
+.leaflet-container { background: var(--plane) !important; }
+.leaflet-control-zoom a { border-radius: 0 !important; }
+
+/* ============ motion ============
+   Three rules, and none of them are decoration. The reveal exists because 72
+   districts appearing at once is a jolt; the crossfade exists because filtering
+   should look like the map responding, not redrawing; the popup rise exists so
+   clicking a district doesn't snap. Anything you consciously notice is too much. */
+
+/* 8. The reveal. Boundaries live on ONE canvas (preferCanvas), so they can only
+   wash in as a whole — the staggered north-to-south wave is carried by the region
+   chips, which are real DOM. `reveal-armed` is added by script, never by markup,
+   so if the script dies the map is still visible. */
+body.reveal-armed .leaflet-overlay-pane canvas,
+body.reveal-armed .dchip { opacity: 0; }
+body.reveal-armed.reveal-on .leaflet-overlay-pane canvas { opacity: 1; transition: opacity .7s ease; }
+body.reveal-armed.reveal-on .dchip { opacity: 1; transition: opacity .55s ease; }
+
+/* 9. Chip fade when a region is isolated. The polygons underneath can't use CSS
+   (canvas), so they're tweened in JS — see applyPolyStyles. */
+.dchip { transition: opacity .22s ease; }
+
+/* 10. The popup rises 5px. Transform goes on the inner wrapper because Leaflet
+   owns the transform on .leaflet-popup itself for positioning. */
+.leaflet-popup { animation: pop-fade .18s ease-out both; }
+.leaflet-popup-content-wrapper { animation: pop-rise .18s ease-out both; }
+@keyframes pop-fade { from { opacity: 0 } to { opacity: 1 } }
+@keyframes pop-rise { from { transform: translateY(5px) } to { transform: none } }
+
+/* 11. Honour the system setting. The loading spinner is exempt — it reports
+   status, so freezing it would be a lie about what the page is doing. */
+@media (prefers-reduced-motion: reduce) {
+  *:not(.spin), *:not(.spin)::before, *:not(.spin)::after {
+    animation-duration: .001ms !important;
+    animation-delay: 0ms !important;
+    transition-duration: .001ms !important;
+    transition-delay: 0ms !important;
+  }
+  body.reveal-armed .leaflet-overlay-pane canvas,
+  body.reveal-armed .dchip { opacity: 1 !important; }
+}
+
+/* ===== comment pass: light only, no boxes, stacked lists ===== */
+footer a.fix{color:inherit;text-decoration:underline;text-underline-offset:2px}
+footer a.fix:hover{color:inherit}
+
+/* #1 + #7: box grids become stacked rows separated by hairlines. */
+.doors,.pris,.cards,.socials{
+  display:block !important;grid-template-columns:none !important;gap:0 !important;
+  border-top:1px solid var(--rule);margin-top:34px;
+}
+.door,.pri,.card,.soc{
+  display:block !important;background:none !important;border:0 !important;
+  border-bottom:1px solid var(--rule) !important;padding:18px 0 !important;margin:0 !important;
+}
+.door:hover,.pri:hover,.card:hover,.soc:hover{background:none !important;border-color:var(--rule) !important}
+/* non-clickable rows get no pointer affordance at all */
+.pri{cursor:default}
+.pris:hover .pri:not(:hover){opacity:1 !important}
+/* clickable rows still signal, but with type not chrome */
+a.door:hover .t,a.door:hover h3,a.card:hover .t,a.soc:hover .h{text-decoration:underline;text-underline-offset:3px}
+
+/* #5: contact block is plain text, always present, never a button. */
+.contact{
+  display:block !important;background:none !important;border:0 !important;
+  border-top:1px solid var(--rule) !important;border-bottom:1px solid var(--rule) !important;
+  padding:18px 0 !important;
+}
+.contact:hover{background:none !important}
+
+/* ---- brand logo integration (added; nothing above this line was changed) ---- */
+.mark img.st-wordmark{display:block;height:22px;width:auto}
+.st-home{display:inline-flex;align-items:center;flex:none;margin-right:12px;text-decoration:none;line-height:0}
+.st-home img{display:block;height:26px;width:auto}
+@media (max-width:640px){.mark img.st-wordmark{height:18px}.st-home img{height:21px}.st-home{margin-right:9px}}
+</style>
+<meta property="og:image" content="https://studenttrustee.net/brand/og-card.png">
+<meta property="og:image:width" content="1200">
+<meta property="og:image:height" content="630">
+<meta name="twitter:card" content="summary_large_image">
+<link rel="icon" href="/brand/poppy-p6.ico" sizes="48x48">
+<link rel="icon" href="/brand/poppy-p6.svg" sizes="any" type="image/svg+xml">
+<link rel="apple-touch-icon" sizes="180x180" href="/brand/poppy-180-p6.png">
+<link rel="mask-icon" href="/brand/poppy-mask-p6.svg" color="#CC480D">
+<link rel="manifest" href="/site-p6.webmanifest">
+</head>
+<body>
+<header>
+  <a class="st-home" href="/" aria-label="StudentTrustee.net home"><img src="/brand/poppy-symbol.png" alt="" width="512" height="512"></a>
+  <div class="brand">
+    <h1>California Student Trustees</h1>
+    <p>Community college district boundaries <span class="sep">·</span> SSCCC Regions I–X</p>
+  </div>
+  <div class="grow"></div>
+  <div class="bar">
+    <a class="btn navlink" href="/">Home</a>
+    <a class="btn navlink" href="/map" aria-current="page">District map</a>
+    <a class="btn navlink" href="/legislature">Legislature</a>
+    <a class="btn navlink" href="/about">About</a>
+    <button class="btn only-narrow" id="btn-side">List</button>
+    <button class="btn" id="btn-table" aria-pressed="false">Table view</button>
+  </div>
+</header>
+<main>
+  <aside id="side">
+    <div class="search"><input id="q" type="search" placeholder="Search trustee, district, college, email…" aria-label="Search trustee, district, college, email" autocomplete="off"></div>
+    <div class="legend">
+      <div class="legend-head">
+        <h2>SSCCC Region</h2>
+        <button id="reset">Show all</button>
+      </div>
+      <div class="chips" id="chips"></div>
+    </div>
+    <div class="list" id="list"></div>
+    <footer class="srcs">
+      Roster as of <b>July 2, 2026</b>, with corrections through <b>September 22, 2026</b>. District boundaries: Foundation for California Community
+      Colleges GIS · Regions: <a href="https://ssccc.org/regions" target="_blank" rel="noopener">SSCCC</a>
+      · Basemap: Esri / OpenStreetMap.
+    </footer>
+  </aside>
+  <div class="mapwrap">
+    <div id="map"></div>
+    <div class="banner" id="banner"><span class="spin"></span><span id="banner-t">Loading district boundaries…</span></div>
+    <div class="intro" id="intro">
+      <h2>Who holds the seat in your district?</h2>
+      <p>Every one of California's <b>72 community college districts</b> is run by a locally elected
+      board, and every board seats a <b>student trustee</b> elected by that district's students. This
+      map draws the real boundaries and shows who holds each seat right now.</p>
+      <ul>
+        <li><b>Click a district</b> for its trustee, colleges, and region.</li>
+        <li><b>Colors are <a href="https://ssccc.org/regions" target="_blank" rel="noopener">SSCCC regions</a></b> (I–X). Click one in the legend to isolate it.</li>
+        <li><b>Search</b> by person, district, or college. <b>Table view</b> lists everyone at once.</li>
+      </ul>
+      <button class="btn primary" id="intro-go">Open the map</button>
+    </div>
+    <div class="sheet" id="sheet">
+      <div class="bar">
+        <h2>All student trustees</h2>
+        <span id="t-count" style="font-size:12px;color:var(--text-muted)"></span>
+        <div class="grow"></div>
+        <button class="btn" id="t-close">Close</button>
+      </div>
+      <div class="scroll"><table id="tbl"></table></div>
+    </div>
+  </div>
+</main>
+
+<script src="https://cdnjs.cloudflare.com/ajax/libs/leaflet/1.9.4/leaflet.min.js"></script>
+<script>
+const DATA = {"districts": [{"name": "Allan Hancock Joint CCD", "region": "VI", "lat": 34.953, "lng": -120.435, "colleges": ["Allan Hancock College"], "trustees": [{"email": "abbygail.velazqu@my.hancockcollege.edu", "first": "Abbygail", "last": "Velazquez", "district": "Allan Hancock Joint CCD", "college": "Allan Hancock College"}], "board": "https://www.hancockcollege.edu/board/index.php", "web": "https://www.hancockcollege.edu/"}, {"name": "Antelope Valley CCD", "region": "VI", "lat": 34.681, "lng": -118.15, "colleges": ["Antelope Valley College"], "trustees": [{"email": "rdhiman@students.avc.edu", "first": "Roshini", "last": "Dhiman", "district": "Antelope Valley CCD", "college": "Antelope Valley College"}], "board": "https://www.avc.edu/board-trustees", "web": "https://www.avc.edu/"}, {"name": "Barstow CCD", "region": "IX", "lat": 34.895, "lng": -117.055, "colleges": ["Barstow Community College"], "trustees": [{"email": "jasmin.blake0539@my.barstow.edu", "first": "Jasmin", "last": "Blake", "district": "Barstow CCD", "college": "Barstow Community College"}], "board": "https://www.barstow.edu/student-services/student-life/associated-student-government", "web": "https://www.barstow.edu/"}, {"name": "Butte-Glenn CCD", "region": "I", "lat": 39.643, "lng": -121.618, "colleges": ["Butte College"], "trustees": [{"email": "studenttrusteeas@butte.edu", "first": "Samuel", "last": "Ceja", "district": "Butte-Glenn CCD", "college": "Butte College"}], "board": "https://www.butte.edu/campus-life/office-of-student_life/student-government/index.html", "web": "https://www.butte.edu/"}, {"name": "Cabrillo CCD", "region": "IV", "lat": 36.986, "lng": -121.898, "colleges": ["Cabrillo College"], "trustees": [{"email": "jofahey@cabrillo.edu", "first": "Josephine", "last": "Fahey-Demoz", "district": "Cabrillo CCD", "college": "Cabrillo College"}], "board": "https://www.cabrillo.edu/governing-board/", "web": "https://www.cabrillo.edu/"}, {"name": "Cerritos CCD", "region": "VIII", "lat": 33.885, "lng": -118.1, "colleges": ["Cerritos College"], "trustees": [{"email": "fabiancarmela37@gmail.com", "first": "Carmela", "last": "Fabian", "district": "Cerritos CCD", "college": "Cerritos College"}], "board": "https://www.cerritos.edu/board/bios/student-trustee.htm", "web": "https://www.cerritos.edu/"}, {"name": "Chabot-Las Positas CCD", "region": "III", "lat": 37.64, "lng": -122.07, "colleges": ["Chabot College", "Las Positas College"], "trustees": [{"email": "shui@chabotcollege.edu", "first": "Savannah", "last": "Hui", "district": "Chabot-Las Positas CCD", "college": "Chabot College"}, {"email": "", "first": "Elyas", "last": "Qaderi", "district": "Chabot-Las Positas CCD", "college": "Las Positas College"}], "board": "https://clpccd.org/bot/boardmembers.php", "web": "https://clpccd.org/"}, {"name": "Chaffey CCD", "region": "IX", "lat": 34.13, "lng": -117.556, "colleges": ["Chaffey College"], "trustees": [{"email": "dylan.hollie@chaffey.edu", "first": "Dylan", "last": "Hollie", "district": "Chaffey CCD", "college": "Chaffey College"}], "board": "https://www.chaffey.edu/studentlife/studentgovernment/index.php", "web": "https://www.chaffey.edu/"}, {"name": "Citrus CCD", "region": "VIII", "lat": 34.128, "lng": -117.87, "colleges": ["Citrus College"], "trustees": [{"email": "phiramos978@student.citruscollege.edu", "first": "Philip", "last": "Ramos", "district": "Citrus CCD", "college": "Citrus College"}], "board": "https://www.citruscollege.edu/admin/bot/index.html", "web": "https://www.citruscollege.edu/"}, {"name": "Coast CCD", "region": "VIII", "lat": 33.673, "lng": -117.909, "colleges": ["Coastline College", "Golden West College", "Orange Coast College"], "trustees": [{"email": "ekilleen@student.cccd.edu", "first": "Zsófi", "last": "Killeen", "district": "Coast CCD", "college": "Golden West College"}], "board": "https://www.cccd.edu/boardoftrustees/contactus.html", "web": "https://www.cccd.edu/"}, {"name": "Compton CCD", "region": "VII", "lat": 33.877, "lng": -118.212, "colleges": ["Compton College"], "trustees": [{"email": "mramirez35@compton.edu", "first": "Mariana", "last": "Ramirez", "district": "Compton CCD", "college": "Compton College"}], "board": "https://www.compton.edu/district/board-of-trustees/index.aspx", "web": "https://www.compton.edu/"}, {"name": "Contra Costa CCD", "region": "III", "lat": 37.958, "lng": -122.06, "colleges": ["Contra Costa College", "Diablo Valley College", "Los Medanos College"], "trustees": [{"email": "studenttrustee@4cd.edu", "first": "Nicholas (\"Nick\")", "last": "Bonasera", "district": "Contra Costa CCD", "college": "Diablo Valley College"}], "board": "https://www.4cd.edu/gb/docs/governing-board-member-contact-information.pdf", "web": "https://www.4cd.edu/"}, {"name": "Copper Mountain CCD", "region": "IX", "lat": 34.135, "lng": -116.322, "colleges": ["Copper Mountain College"], "trustees": [{"email": "stesin@student.cmccd.edu", "first": "Supawadee (\"Sue\")", "last": "Tesin", "district": "Copper Mountain CCD", "college": "Copper Mountain College"}], "board": "https://www.cmccd.edu/campus/operations/office-of-the-president/trustees/", "web": "https://www.cmccd.edu/"}, {"name": "Desert CCD", "region": "IX", "lat": 33.744, "lng": -116.372, "colleges": ["College of the Desert"], "trustees": [{"email": "stascod@collegeofthedesert.edu", "first": "William", "last": "Garcia", "district": "Desert CCD", "college": "College of the Desert"}], "board": "https://www.collegeofthedesert.edu/community/board-of-trustees/default.php", "web": "https://www.collegeofthedesert.edu/"}, {"name": "El Camino CCD", "region": "VII", "lat": 33.885, "lng": -118.33, "colleges": ["El Camino College"], "trustees": [{"email": "nina_watanabe2021@elcamino.edu", "first": "Nina", "last": "Watanabe", "district": "El Camino CCD", "college": "El Camino College"}], "board": "https://www.elcamino.edu/leadership/trustees/index.php", "web": "https://www.elcamino.edu/"}, {"name": "Feather River CCD", "region": "I", "lat": 39.936, "lng": -120.947, "colleges": ["Feather River College"], "trustees": [{"email": "ctcushion@frc.edu", "first": "Charlie Terence", "last": "Cushion", "district": "Feather River CCD", "college": "Feather River College"}], "board": "https://www.frc.edu/asfrc/index", "web": "https://www.frc.edu/"}, {"name": "Foothill-De Anza CCD", "region": "IV", "lat": 37.361, "lng": -122.128, "colleges": ["De Anza College", "Foothill College"], "trustees": [{"email": "lenacungg@gmail.com", "first": "Lena", "last": "Cung", "district": "Foothill-De Anza CCD", "college": "De Anza College"}, {"email": "asfc.marijaangelas@gmail.com", "first": "Marija", "last": "Savinovic", "district": "Foothill-De Anza CCD", "college": "Foothill College"}], "board": "https://www.fhda.edu/_about-us/_board/board-member-profiles.html", "web": "https://www.fhda.edu/"}, {"name": "Gavilan Joint CCD", "region": "IV", "lat": 37.0, "lng": -121.567, "colleges": ["Gavilan College"], "trustees": [{"email": "joshua.williams3@my.gavilan.edu", "first": "Joshua", "last": "Williams", "district": "Gavilan Joint CCD", "college": "Gavilan College"}], "board": "https://www.gavilan.edu/administration/board/members.php", "web": "https://www.gavilan.edu/"}, {"name": "Glendale CCD", "region": "VII", "lat": 34.17, "lng": -118.235, "colleges": ["Glendale Community College"], "trustees": [{"email": "mmarekh828@student.glendale.edu", "first": "Mia", "last": "Marekhashvili", "district": "Glendale CCD", "college": "Glendale Community College"}], "board": "https://www.glendale.edu/about-gcc/board-of-trustees", "web": "https://www.glendale.edu/"}, {"name": "Grossmont-Cuyamaca CCD", "region": "X", "lat": 32.816, "lng": -116.94, "colleges": ["Cuyamaca College", "Grossmont College"], "trustees": [{"email": "josephanthony_cruz@gcccd.edu", "first": "Joseph Anthony", "last": "Cruz", "district": "Grossmont-Cuyamaca CCD", "college": "Grossmont College"}, {"email": "Yaritza_garcia@gcccd.edu", "first": "Yaritza", "last": "Garcia", "district": "Grossmont-Cuyamaca CCD", "college": "Cuyamaca College"}], "board": "https://www.gcccd.edu/governing-board/index.php", "web": "https://www.gcccd.edu/"}, {"name": "Hartnell CCD", "region": "IV", "lat": 36.673, "lng": -121.66, "colleges": ["Hartnell College"], "trustees": [{"email": "Luzelenaatrisco@student.hartnell.edu", "first": "Luzelena", "last": "Atrisco", "district": "Hartnell CCD", "college": "Hartnell College"}], "board": "https://www.hartnell.edu/about/hccdgb/hartnell-ccd-governing-board-members.html", "web": "https://www.hartnell.edu/"}, {"name": "Imperial CCD", "region": "X", "lat": 32.847, "lng": -115.578, "colleges": ["Imperial Valley College"], "trustees": [{"email": "aflores114@students.imperial.edu", "first": "Andy Sebastian", "last": "Flores", "district": "Imperial CCD", "college": "Imperial Valley College"}], "board": "https://www.imperial.edu/about/college-governance/board-of-trustees/board-members/index.html", "web": "https://www.imperial.edu/"}, {"name": "Kern CCD", "region": "V", "lat": 35.395, "lng": -119.01, "colleges": ["Bakersfield College", "Cerro Coso Community College", "Porterville College"], "trustees": [{"email": "khalfani.mackey@bakersfieldcollege.edu", "first": "Khalfani", "last": "Mackey", "district": "Kern CCD", "college": "Bakersfield College"}], "board": "https://committees.bakersfieldcollege.edu/bcsga-executive-board/members.html", "web": "https://committees.bakersfieldcollege.edu/"}, {"name": "Lake Tahoe CCD", "region": "II", "lat": 38.933, "lng": -119.978, "colleges": ["Lake Tahoe Community College"], "trustees": [{"email": "celorne@mail.ltcc.edu", "first": "Camille", "last": "Lorne", "district": "Lake Tahoe CCD", "college": "Lake Tahoe Community College"}], "board": "https://www.ltcc.edu/about/board-of-trustees/", "web": "https://www.ltcc.edu/"}, {"name": "Lassen CCD", "region": "I", "lat": 40.417, "lng": -120.653, "colleges": ["Lassen College"], "trustees": [], "board": "https://www.lassencollege.edu/about-lcc/board-of-trustees/", "web": "https://www.lassencollege.edu/"}, {"name": "Long Beach CCD", "region": "VIII", "lat": 33.784, "lng": -118.155, "colleges": ["Long Beach City College"], "trustees": [{"email": "studenttrustee@lbcc.edu", "first": "Eleipise", "last": "Leiataua", "district": "Long Beach CCD", "college": "Long Beach City College"}], "board": "https://www.lbcc.edu/board-trustees", "web": "https://www.lbcc.edu/"}, {"name": "Los Angeles CCD", "region": "VII", "lat": 34.061, "lng": -118.286, "colleges": ["East Los Angeles College", "Los Angeles City College", "Los Angeles Harbor College", "Los Angeles Mission College", "Los Angeles Pierce College", "Los Angeles Southwest College", "Los Angeles Trade-Technical College", "Los Angeles Valley College", "West Los Angeles College"], "trustees": [{"email": "LACCDBOToffice@laccd.edu", "first": "Brian", "last": "Campos", "district": "Los Angeles CCD", "college": "Los Angeles Trade-Technical College"}], "board": "https://www.laccd.edu/board/student-trustee", "web": "https://www.laccd.edu/"}, {"name": "Los Rios CCD", "region": "II", "lat": 38.545, "lng": -121.469, "colleges": ["American River College", "Cosumnes River College", "Folsom Lake College", "Sacramento City College"], "trustees": [{"email": "TorresL2@scc.losrios.edu", "first": "Leonardo", "last": "Torres Ruvalcaba", "district": "Los Rios CCD", "college": "Sacramento City College"}], "board": "https://losrios.edu/about-los-rios/board-of-trustees/student-trustee", "web": "https://losrios.edu/"}, {"name": "Marin CCD", "region": "III", "lat": 37.951, "lng": -122.548, "colleges": ["College of Marin"], "trustees": [{"email": "hgoray5012@mycom.marin.edu", "first": "Henry", "last": "Goray", "district": "Marin CCD", "college": "College of Marin"}], "board": "https://www1.marin.edu/board-trustees", "web": "https://www1.marin.edu/"}, {"name": "Mendocino-Lake CCD", "region": "I", "lat": 39.176, "lng": -123.202, "colleges": ["Mendocino College"], "trustees": [{"email": "lydia.magana@student.mendocino.edu", "first": "Lydia", "last": "Magana", "district": "Mendocino-Lake CCD", "college": "Mendocino College"}], "board": "https://www.mendocino.edu/student-life/activities/student-government", "web": "https://www.mendocino.edu/"}, {"name": "Merced CCD", "region": "V", "lat": 37.339, "lng": -120.463, "colleges": ["Merced College"], "trustees": [{"email": "alana.mercado@campus.mccd.edu", "first": "Alana", "last": "Mercado", "district": "Merced CCD", "college": "Merced College"}], "board": "https://www.mccd.edu/about-merced-college/leadership/board-of-trustees/", "web": "https://www.mccd.edu/"}, {"name": "MiraCosta CCD", "region": "X", "lat": 33.192, "lng": -117.311, "colleges": ["MiraCosta College"], "trustees": [{"email": "mpatton@miracosta.edu", "first": "Mily", "last": "Patton", "district": "MiraCosta CCD", "college": "MiraCosta College"}], "board": "https://www.miracosta.edu/office-of-the-president/board-of-trustees/", "web": "https://www.miracosta.edu/"}, {"name": "Monterey Peninsula CCD", "region": "IV", "lat": 36.594, "lng": -121.877, "colleges": ["Monterey Peninsula College"], "trustees": [{"email": "scabreranunez2549@mpc.edu", "first": "Stilver", "last": "Cabrera Nunez", "district": "Monterey Peninsula CCD", "college": "Monterey Peninsula College"}], "board": "https://www.mpc.edu/about/leadership/board-of-trustees/index.html", "web": "https://www.mpc.edu/"}, {"name": "Mt. San Antonio CCD", "region": "VIII", "lat": 34.045, "lng": -117.845, "colleges": ["Mt. San Antonio College"], "trustees": [{"email": "zwu67@student.mtsac.edu", "first": "Zheng Hong", "last": "Wu", "district": "Mt. San Antonio CCD", "college": "Mt. San Antonio College"}], "board": "https://www.mtsac.edu/governance/trustees/members/z-wu.html", "web": "https://www.mtsac.edu/"}, {"name": "Mt. San Jacinto CCD", "region": "IX", "lat": 33.802, "lng": -116.965, "colleges": ["Mt. San Jacinto College"], "trustees": [{"email": "0742377@my.msjc.edu", "first": "Aron", "last": "Achiczy", "district": "Mt. San Jacinto CCD", "college": "Mt. San Jacinto College"}], "board": "https://www.msjc.edu/boardoftrustees/Student-Trustee.html", "web": "https://www.msjc.edu/"}, {"name": "Napa Valley CCD", "region": "II", "lat": 38.325, "lng": -122.301, "colleges": ["Napa Valley College"], "trustees": [{"email": "rlove64870@student.napavalley.edu", "first": "Riley", "last": "Love", "district": "Napa Valley CCD", "college": "Napa Valley College"}], "board": "https://www.napavalley.edu/about/board-of-trustees/index.html", "web": "https://www.napavalley.edu/"}, {"name": "North Orange County CCD", "region": "VIII", "lat": 33.878, "lng": -117.925, "colleges": ["Cypress College", "Fullerton College", "North Orange Continuing Education"], "trustees": [{"email": "noahsmith8517@gmail.com", "first": "Ahmad", "last": "Haidari", "district": "North Orange County CCD", "college": "Cypress College"}, {"email": "meilisamanthal@gmail.com", "first": "Samantha", "last": "Meili", "district": "North Orange County CCD", "college": "Fullerton College"}, {"email": "studenttrustee@noce.edu", "first": "Yellckin", "last": "Brenes", "district": "North Orange County CCD", "college": "North Orange Continuing Education"}], "board": "https://www.nocccd.edu/board-trustees", "web": "https://www.nocccd.edu/"}, {"name": "Ohlone CCD", "region": "IV", "lat": 37.532, "lng": -121.919, "colleges": ["Ohlone College"], "trustees": [], "board": "https://www.ohlone.edu/board/members", "web": "https://www.ohlone.edu/", "seat": "vacant", "seatSource": "https://www.ohlone.edu/board/members"}, {"name": "Palo Verde CCD", "region": "IX", "lat": 33.617, "lng": -114.596, "colleges": ["Palo Verde College"], "trustees": [{"email": "stu-wehrli.grace@student.paloverde.edu", "first": "Grace", "last": "Wehrli", "district": "Palo Verde CCD", "college": "Palo Verde College"}], "board": "https://www.paloverde.edu/board/index.html", "web": "https://www.paloverde.edu/"}, {"name": "Palomar CCD", "region": "X", "lat": 33.15, "lng": -117.18, "colleges": ["Palomar College"], "trustees": [{"email": "afridman@palomar.edu", "first": "Ariel", "last": "Fridman", "district": "Palomar CCD", "college": "Palomar College"}], "board": "https://www.palomar.edu/governingboard/governing-board-contact-information/", "web": "https://www.palomar.edu/"}, {"name": "Pasadena Area CCD", "region": "VII", "lat": 34.145, "lng": -118.114, "colleges": ["Pasadena City College"], "trustees": [{"email": "jvega46@go.pasadena.edu", "first": "Jesslie", "last": "Vega", "district": "Pasadena Area CCD", "college": "Pasadena City College"}], "board": "https://pasadena.edu/about/board-of-trustees/members/index.php", "web": "https://pasadena.edu/"}, {"name": "Peralta CCD", "region": "III", "lat": 37.798, "lng": -122.269, "colleges": ["Berkeley City College", "College of Alameda", "Laney College", "Merritt College"], "trustees": [{"email": "30078956@cc.peralta.edu", "first": "Harsheet", "last": "Subedi", "district": "Peralta CCD", "college": "Berkeley City College"}, {"email": "30087068@cc.peralta.edu", "first": "Jazlyn", "last": "Tandel", "district": "Peralta CCD", "college": "Berkeley City College"}], "board": "https://www.peralta.edu/boardoftrustees", "web": "https://www.peralta.edu/"}, {"name": "Rancho Santiago CCD", "region": "VIII", "lat": 33.756, "lng": -117.833, "colleges": ["Santa Ana College", "Santiago Canyon College"], "trustees": [{"email": "sr60751@student.sac.edu", "first": "Stephen", "last": "Reid", "district": "Rancho Santiago CCD", "college": "Santiago Canyon College"}], "board": "https://rsccd.edu/BOT/index.aspx", "web": "https://rsccd.edu/"}, {"name": "Redwoods CCD", "region": "I", "lat": 40.703, "lng": -124.132, "colleges": ["College of the Redwoods"], "trustees": [{"email": "Student-Trustee@Redwoods.edu", "first": "Samantha", "last": "Young", "district": "Redwoods CCD", "college": "College of the Redwoods"}], "board": "https://www.redwoods.edu/students/ascr/index.php", "web": "https://www.redwoods.edu/"}, {"name": "Rio Hondo CCD", "region": "VIII", "lat": 34.007, "lng": -118.038, "colleges": ["Rio Hondo College"], "trustees": [{"email": "pablo.chamagua6261@my.riohondo.edu", "first": "Pablo", "last": "Chamagua", "district": "Rio Hondo CCD", "college": "Rio Hondo College"}], "board": "https://www.riohondo.edu/administration/board-of-trustees/", "web": "https://www.riohondo.edu/"}, {"name": "Riverside CCD", "region": "IX", "lat": 33.958, "lng": -117.397, "colleges": ["Moreno Valley College", "Norco College", "Riverside City College"], "trustees": [{"email": "ASRCCD.Trustee@rccd.edu", "first": "Adela", "last": "Gonzales", "district": "Riverside CCD", "college": "Riverside City College"}], "board": "https://rccd.edu/bot/members.html", "web": "https://rccd.edu/"}, {"name": "San Bernardino CCD", "region": "IX", "lat": 34.113, "lng": -117.301, "colleges": ["Crafton Hills College", "San Bernardino Valley College"], "trustees": [{"email": "jagarcia@sbccd.edu", "first": "Jazmyn", "last": "Garcia", "district": "San Bernardino CCD", "college": "Crafton Hills College"}, {"email": "nagarcia@sbccd.edu", "first": "Natalie", "last": "Garcia", "district": "San Bernardino CCD", "college": "San Bernardino Valley College"}], "board": "https://sbccd.edu/about-sbccd/board-of-trustees/", "web": "https://sbccd.edu/"}, {"name": "San Diego CCD", "region": "X", "lat": 32.745, "lng": -117.13, "colleges": ["San Diego City College", "San Diego College of Continuing Education", "San Diego Mesa College", "San Diego Miramar College"], "trustees": [{"email": "jlopez156@student.sdccd.edu", "first": "Jesse", "last": "Lopez", "district": "San Diego CCD", "college": "San Diego City College"}, {"email": "lecarri@student.sdccd.edu", "first": "Luis Miguel", "last": "Ecarri", "district": "San Diego CCD", "college": "San Diego College of Continuing Education"}, {"email": "mfuzy@student.sdccd.edu", "first": "Michael", "last": "Fuzy", "district": "San Diego CCD", "college": "San Diego Miramar College"}, {"email": "maugelliacuna@student.sdccd.edu", "first": "Miranda", "last": "Augelli Acuna", "district": "San Diego CCD", "college": "San Diego Mesa College"}], "board": "https://www.sdccd.edu/about/leadership/board-of-trustees/index.aspx", "web": "https://www.sdccd.edu/"}, {"name": "San Francisco CCD", "region": "III", "lat": 37.726, "lng": -122.448, "colleges": ["City College of San Francisco"], "trustees": [{"email": "iwong73@mail.ccsf.edu", "first": "Ian", "last": "Wong", "district": "San Francisco CCD", "college": "City College of San Francisco"}], "board": "https://www.ccsf.edu/about-ccsf/board-trustees", "web": "https://www.ccsf.edu/"}, {"name": "San Joaquin Delta CCD", "region": "II", "lat": 37.984, "lng": -121.323, "colleges": ["San Joaquin Delta College"], "trustees": [{"email": "EMiranda547@mustangs.deltacollege.edu", "first": "Edwing", "last": "Miranda", "district": "San Joaquin Delta CCD", "college": "San Joaquin Delta College"}], "board": "https://deltacollege.edu/board-trustees/board-trustees-members", "web": "https://deltacollege.edu/"}, {"name": "San José-Evergreen CCD", "region": "IV", "lat": 37.325, "lng": -121.865, "colleges": ["Evergreen Valley College", "San Jose City College"], "trustees": [{"email": "adrian.lopez@sjeccd.edu", "first": "Adrian", "last": "Lopez", "district": "San José-Evergreen CCD", "college": "San Jose-Evergreen CCD"}, {"email": "Omarrion.Young@sjeccd.edu", "first": "Omarrion", "last": "Young", "district": "San José-Evergreen CCD", "college": "San Jose-Evergreen CCD"}], "board": "https://sjeccd.edu/discover-sjeccd/board-of-trustees", "web": "https://sjeccd.edu/"}, {"name": "San Luis Obispo County CCD", "region": "VI", "lat": 35.303, "lng": -120.663, "colleges": ["Cuesta College"], "trustees": [{"email": "shaun_chilton@my.cuesta.edu", "first": "Shaun", "last": "Chilton", "district": "San Luis Obispo County CCD", "college": "Cuesta College"}], "board": "https://www.cuesta.edu/about/boardtrustees/index.html", "web": "https://www.cuesta.edu/"}, {"name": "San Mateo County CCD", "region": "III", "lat": 37.534, "lng": -122.335, "colleges": ["Cañada College", "College of San Mateo", "Skyline College"], "trustees": [{"email": "reboredor@smccd.edu", "first": "Revee", "last": "Reboredo", "district": "San Mateo County CCD", "college": "Skyline College"}], "board": "https://smccd.edu/boardoftrustees/members.php", "web": "https://smccd.edu/"}, {"name": "Santa Barbara CCD", "region": "VI", "lat": 34.407, "lng": -119.69, "colleges": ["Santa Barbara City College"], "trustees": [{"email": "sheredia2@pipeline.sbcc.edu", "first": "Soleá", "last": "Heredia", "district": "Santa Barbara CCD", "college": "Santa Barbara City College"}], "board": "https://www.sbcc.edu/boardoftrustees/student-trustee.php", "web": "https://www.sbcc.edu/"}, {"name": "Santa Clarita CCD", "region": "VI", "lat": 34.427, "lng": -118.57, "colleges": ["College of the Canyons"], "trustees": [{"email": "asg_trustee@canyons.edu", "first": "Ishita", "last": "Muppala", "district": "Santa Clarita CCD", "college": "College of the Canyons"}], "board": "https://www.canyons.edu/administration/board/profiles.php", "web": "https://www.canyons.edu/"}, {"name": "Santa Monica CCD", "region": "VII", "lat": 34.017, "lng": -118.47, "colleges": ["Santa Monica College"], "trustees": [{"email": "liljegren_audrey_e01@student.smc.edu", "first": "Audrey", "last": "Liljegren", "district": "Santa Monica CCD", "college": "Santa Monica College"}], "board": "https://www.smc.edu/community/office-of-student-life/student-government/as-board/student-trustee.php", "web": "https://www.smc.edu/"}, {"name": "Sequoias CCD", "region": "V", "lat": 36.315, "lng": -119.317, "colleges": ["College of the Sequoias"], "trustees": [{"email": "jlez6965@giant.cos.edu", "first": "Jose", "last": "Lezama", "district": "Sequoias CCD", "college": "College of the Sequoias"}], "board": "https://catalog.cos.edu/about-college-sequoias/board-members/", "web": "https://catalog.cos.edu/"}, {"name": "Shasta-Tehama-Trinity Joint CCD", "region": "I", "lat": 40.617, "lng": -122.311, "colleges": ["Shasta College"], "trustees": [{"email": "m.bobadilla58@students.shastacollege.edu", "first": "Mariah", "last": "Bobadilla", "district": "Shasta-Tehama-Trinity Joint CCD", "college": "Shasta College"}], "board": "https://www.shastacollege.edu/about/leadership-organization/board-of-trustees/", "web": "https://www.shastacollege.edu/"}, {"name": "Sierra Joint CCD", "region": "II", "lat": 38.797, "lng": -121.234, "colleges": ["Sierra College"], "trustees": [{"email": "khill32@sierracollege.edu", "first": "Kevin", "last": "Hill", "district": "Sierra Joint CCD", "college": "Sierra College"}], "board": "https://www.sierracollege.edu/administration/board-of-trustees/", "web": "https://www.sierracollege.edu/"}, {"name": "Siskiyou Joint CCD", "region": "I", "lat": 41.428, "lng": -122.383, "colleges": ["College of the Siskiyous"], "trustees": [{"email": "cdepaul@siskiyous.edu", "first": "Caelli", "last": "DePaul", "district": "Siskiyou Joint CCD", "college": "College of the Siskiyous"}], "board": "https://www.siskiyous.edu/board/", "web": "https://www.siskiyous.edu/"}, {"name": "Solano CCD", "region": "II", "lat": 38.23, "lng": -122.062, "colleges": ["Solano Community College"], "trustees": [{"email": "vbhurjee@solano.edu", "first": "Vaani", "last": "Kaur Bhurjee", "district": "Solano CCD", "college": "Solano Community College"}], "board": "https://solano.edu/boards-committees/sccd-governing-board/board-members.php", "web": "https://solano.edu/"}, {"name": "Sonoma County CCD", "region": "II", "lat": 38.454, "lng": -122.727, "colleges": ["Santa Rosa Junior College"], "trustees": [{"email": "studenttrustee@santarosa.edu", "first": "Jason", "last": "Reid", "district": "Sonoma County CCD", "college": "Santa Rosa Junior College"}], "board": "https://trustees.santarosa.edu/board", "web": "https://trustees.santarosa.edu/"}, {"name": "South Orange County CCD", "region": "VIII", "lat": 33.585, "lng": -117.669, "colleges": ["Irvine Valley College", "Saddleback College", "Advanced Technology & Education Park (ATEP)"], "trustees": [{"email": "Eshin34@socccd.edu", "first": "Eric", "last": "Shin", "district": "South Orange County CCD", "college": "Irvine Valley College"}], "board": "https://www.socccd.edu/board-trustees/meet-trustees", "web": "https://www.socccd.edu/"}, {"name": "Southwestern CCD", "region": "X", "lat": 32.641, "lng": -117.014, "colleges": ["Southwestern College"], "trustees": [{"email": "SWCStudentTrustee@swccd.edu", "first": "Orlando", "last": "Vicente-Lazo", "district": "Southwestern CCD", "college": "Southwestern College"}], "board": "https://www.swccd.edu/about-swc/leadership/governing-board/governing-board-members.aspx", "web": "https://www.swccd.edu/"}, {"name": "State Center CCD", "region": "V", "lat": 36.766, "lng": -119.797, "colleges": ["Clovis Community College", "Fresno City College", "Madera Community College", "Reedley College"], "trustees": [{"email": "NGarza31@my.scccd.edu", "first": "Nicholas", "last": "Garza", "district": "State Center CCD", "college": "Fresno City College"}], "board": "https://www.scccd.edu/about/board-of-trustees/index.html", "web": "https://www.scccd.edu/"}, {"name": "Ventura County CCD", "region": "VI", "lat": 34.283, "lng": -119.223, "colleges": ["Moorpark College", "Oxnard College", "Ventura College"], "trustees": [{"email": "avelasquez2@my.vcccd.edu", "first": "Abel", "last": "Velasquez", "district": "Ventura County CCD", "college": "Oxnard College"}], "board": "https://www.vcccd.edu/board-of-trustees", "web": "https://www.vcccd.edu/"}, {"name": "Victor Valley CCD", "region": "IX", "lat": 34.512, "lng": -117.336, "colleges": ["Victor Valley College"], "trustees": [{"email": "melissp0377@student.vvc.edu", "first": "Melissa", "last": "Pulaski", "district": "Victor Valley CCD", "college": "Victor Valley College"}], "board": "https://www.vvc.edu/board-trustees", "web": "https://www.vvc.edu/"}, {"name": "West Hills CCD", "region": "V", "lat": 36.14, "lng": -120.363, "colleges": ["West Hills College Coalinga", "West Hills College Lemoore"], "trustees": [{"email": "canoncosta@my.whccd.edu", "first": "Canon", "last": "Costa", "district": "West Hills CCD", "college": "West Hills College Lemoore"}], "board": "https://westhillscollege.com/news/posts/2026-new-student-trustee.php", "web": "https://westhillscollege.com/"}, {"name": "West Kern CCD", "region": "V", "lat": 35.144, "lng": -119.462, "colleges": ["Taft College"], "trustees": [], "board": "https://www.taftcollege.edu/board-of-trustees/", "web": "https://www.taftcollege.edu/"}, {"name": "West Valley-Mission CCD", "region": "IV", "lat": 37.276, "lng": -122.013, "colleges": ["Mission College", "West Valley College"], "trustees": [{"email": "EllaRae.Petersen@wvm.edu", "first": "Ella Rae", "last": "Peterson", "district": "West Valley-Mission CCD", "college": "West Valley College"}, {"email": "yhassan@mywvm.wvm.edu", "first": "Yasin", "last": "Hassan", "district": "West Valley-Mission CCD", "college": "Mission College"}], "board": "https://www.wvm.edu/board/trustees/index.html", "web": "https://www.wvm.edu/"}, {"name": "Yosemite CCD", "region": "II", "lat": 37.663, "lng": -121.01, "colleges": ["Columbia College", "Modesto Junior College"], "trustees": [{"email": "seth1047019@my.yosemite.edu", "first": "Seth", "last": "Rodrigues", "district": "Yosemite CCD", "college": ""}], "board": "https://www.yosemite.edu/trustees/index.html", "web": "https://www.yosemite.edu/"}, {"name": "Yuba CCD", "region": "II", "lat": 39.113, "lng": -121.542, "colleges": ["Woodland Community College", "Yuba College"], "trustees": [{"email": "annabellacruz2252@gmail.com", "first": "Annabella", "last": "Cruz", "district": "Yuba CCD", "college": "Yuba College"}], "board": "https://www.yccd.edu/board/student-trustee/", "web": "https://www.yccd.edu/"}], "totalTrustees": 81, "sourceFile": "Student Trustee List 7.2.26.xlsx"};
+const ALLOW_EMAILS = true;
+
+const REGIONS = ["I","II","III","IV","V","VI","VII","VIII","IX","X"];
+const REGION_NAME = {
+  I:"Far North", II:"Sacramento & North Valley", III:"East & North Bay",
+  IV:"South Bay & Central Coast", V:"Central Valley", VI:"South Central Coast",
+  VII:"Los Angeles", VIII:"Orange County & San Gabriel", IX:"Inland Empire & Desert",
+  X:"San Diego & Imperial"
+};
+const HOME = "Contra Costa CCD";
+const BOUNDARY_URL = "https://services6.arcgis.com/XNnWmtFBLgSx99Bz/arcgis/rest/services/" +
+  "CCC_ArcGIS__Map_Bundle/FeatureServer/4/query?where=1%3D1&outFields=DistrictNa,ShortName" +
+  "&outSR=4326&maxAllowableOffset=0.0012&geometryPrecision=5&returnGeometry=true&f=geojson";
+
+const css = (v) => getComputedStyle(document.documentElement).getPropertyValue(v).trim();
+const regionColor = (r) => css("--r" + (REGIONS.indexOf(r) + 1));
+
+/* ---------- name matching ---------- */
+const STOP = new Set(["community","college","colleges","district","districts","ccd","joint",
+  "county","area","the","of","junior","unified","and"]);
+function norm(s){
+  return (s||"").normalize("NFD").replace(/[\u0300-\u036f]/g,"")
+    .toLowerCase().replace(/[^a-z0-9]+/g," ")
+    .split(" ").filter(Boolean)
+    .map(w => w==="mount"?"mt":(w==="saint"?"st":w))
+    .filter(w => !STOP.has(w)).join(" ");
+}
+const byNorm = new Map(), byCompact = new Map();
+DATA.districts.forEach(d => {
+  d.key = norm(d.name);
+  byNorm.set(d.key, d);
+  byCompact.set(d.key.replace(/ /g, ""), d);   // "Foothill-DeAnza" vs "Foothill-De Anza"
+});
+function matchDistrict(raw){
+  const k = norm(raw);
+  if (byNorm.has(k)) return byNorm.get(k);
+  const kc = k.replace(/ /g, "");
+  if (byCompact.has(kc)) return byCompact.get(kc);
+  const kt = new Set(k.split(" "));
+  let best = null, bestScore = 0;
+  for (const d of DATA.districts){
+    const dt = new Set(d.key.split(" "));
+    let inter = 0; kt.forEach(t => { if (dt.has(t)) inter++; });
+    const score = inter / new Set([...kt, ...dt]).size;
+    if (score > bestScore){ bestScore = score; best = d; }
+  }
+  return bestScore >= 0.55 ? best : null;
+}
+
+/* ---------- geometry helpers ---------- */
+function ringCentroid(ring){
+  let a = 0, x = 0, y = 0;
+  for (let i = 0, j = ring.length - 1; i < ring.length; j = i++){
+    const f = ring[j][0]*ring[i][1] - ring[i][0]*ring[j][1];
+    a += f; x += (ring[j][0]+ring[i][0])*f; y += (ring[j][1]+ring[i][1])*f;
+  }
+  if (!a) return ring[0] ? [ring[0][0], ring[0][1]] : null;
+  return [x/(3*a), y/(3*a)];
+}
+function ringArea(ring){
+  let a = 0;
+  for (let i = 0, j = ring.length - 1; i < ring.length; j = i++)
+    a += ring[j][0]*ring[i][1] - ring[i][0]*ring[j][1];
+  return Math.abs(a/2);
+}
+function bestCentroid(geom){
+  const polys = geom.type === "Polygon" ? [geom.coordinates] : geom.coordinates;
+  let best = null, bestA = -1;
+  for (const p of polys){
+    const a = ringArea(p[0]);
+    if (a > bestA){ bestA = a; best = p[0]; }
+  }
+  const c = best && ringCentroid(best);
+  return c ? [c[1], c[0]] : null;   // [lat, lng]
+}
+
+/* ---------- map ---------- */
+const map = L.map("map", { zoomControl:false, minZoom:5, maxZoom:13, preferCanvas:true })
+  .setView([37.3, -119.4], 6);
+L.control.zoom({ position:"bottomright" }).addTo(map);
+map.createPane("labels"); map.getPane("labels").style.zIndex = 640;
+map.getPane("labels").style.pointerEvents = "none";
+map.createPane("chips"); map.getPane("chips").style.zIndex = 660;
+
+let baseLayer = null, labelLayer = null;
+/* CARTO began requiring an API key on its raster basemaps and is retiring them;
+   unkeyed tiles come back stamped "API KEY REQUIRED". Esri's Light Gray Canvas
+   is the closest match to the Positron look we had, needs no key, and keeps the
+   city labels that orient people. Attribution below is the required one. */
+const BASE_URL  = "https://services.arcgisonline.com/ArcGIS/rest/services/Canvas/World_Light_Gray_Base/MapServer/tile/{z}/{y}/{x}";
+const LABEL_URL = "https://services.arcgisonline.com/ArcGIS/rest/services/Canvas/World_Light_Gray_Reference/MapServer/tile/{z}/{y}/{x}";
+function setBasemap(){
+  if (baseLayer) map.removeLayer(baseLayer);
+  if (labelLayer) map.removeLayer(labelLayer);
+  const attr = 'Tiles &copy; <a href="https://www.esri.com/">Esri</a> &middot; sources: Esri, HERE, Garmin, &copy; <a href="https://www.openstreetmap.org/copyright">OpenStreetMap</a> contributors &middot; district boundaries: Foundation for California Community Colleges';
+  /* Two raster layers (base + labels) means every zoom fires two full sets of
+     tile requests, and on a retina screen each tile is 4x the pixels. Fetching
+     mid-animation is what leaves black gaps while the zoom is still moving:
+     updateWhenZooming defers the requests to the end of the gesture, and
+     keepBuffer holds a ring of tiles outside the viewport so there is something
+     to show in the meantime. */
+  /* Esri serves one tile per zoom level with no retina variant and no
+     subdomains, so this is already half the requests the two CARTO layers made.
+     updateWhenZooming defers fetches to the end of the gesture and keepBuffer
+     holds a ring of tiles outside the viewport, which is what stops the black
+     gaps mid-zoom. */
+  const tileOpts = { maxZoom:16, updateWhenZooming:false, keepBuffer:3, crossOrigin:true };
+  baseLayer = L.tileLayer(BASE_URL,
+    Object.assign({ attribution: attr }, tileOpts)).addTo(map);
+  labelLayer = L.tileLayer(LABEL_URL,
+    Object.assign({ pane:"labels", opacity:.9 }, tileOpts)).addTo(map);
+}
+setBasemap();
+
+/* ---------- state ---------- */
+const active = new Set(REGIONS);
+let query = "";
+let showEmails = true;
+const slug = (s) => s.toLowerCase().normalize("NFD").replace(/[\u0300-\u036f]/g,"")
+  .replace(/[^a-z0-9]+/g,"-").replace(/^-|-$/g,"");
+const bySlug = new Map(DATA.districts.map(d => [slug(d.name), d]));
+const layers = new Map();   // district name -> {poly, chip}
+const regionLabels = [];
+let usingFallback = false;
+
+/* ---------- popup ---------- */
+const esc = (s) => String(s).replace(/[&<>"]/g, c => ({"&":"&amp;","<":"&lt;",">":"&gt;",'"':"&quot;"}[c]));
+function popupHTML(d){
+  const sw = `<span class="sw" style="background:${regionColor(d.region)}"></span>`;
+  const people = d.trustees.map(p => `
+    <div class="who">
+      <div class="n">${esc(p.first)} ${esc(p.last)}</div>
+      <dl class="kv">
+        ${showEmails ? (p.email ? `<dt>Email</dt><dd><a href="mailto:${esc(p.email)}">${esc(p.email)}</a></dd>` : `<dt>Email</dt><dd class="unk">Not listed yet</dd>`) : ""}
+        <dt>District</dt><dd>${esc(p.district)}</dd>
+        ${p.college ? `<dt>College</dt><dd>${esc(p.college)}</dd>` : ""}
+      </dl>
+    </div>`).join("");
+  const hid = (ALLOW_EMAILS && !showEmails && d.trustees.length)
+    ? '<div class="hid">Contact info hidden &middot; enable “Show contact info” in the top bar.</div>' : "";
+  return `<div class="pop">
+    <div class="rg">${sw} Region ${d.region} &middot; ${esc(REGION_NAME[d.region])}</div>
+    <h3>${esc(d.name)}</h3>
+    <p class="cols">${d.colleges.map(esc).join(" &middot; ")}</p>
+    ${people || (d.seat === "vacant"
+      ? `<div class="none">The district lists this seat as vacant.${d.seatSource ? ` <a href="${esc(d.seatSource)}" target="_blank" rel="noopener">Board page &#8599;</a>` : ""}</div>`
+      : '<div class="none">No student trustee listed in this roster.</div>')}
+    ${hid}
+    ${d.web ? `<div class="links">
+      <a href="${esc(d.web)}" target="_blank" rel="noopener">District website ↗</a>
+      <a href="${esc(d.board)}" target="_blank" rel="noopener">Board of Trustees ↗</a>
+    </div>` : ""}
+    <div class="share">
+      <button data-share="${esc(slug(d.name))}">Copy link to this district</button>
+      <span class="hid" data-share-msg></span>
+    </div>
+  </div>`;
+}
+
+/* ---------- styling ---------- */
+function visible(d){
+  if (!active.has(d.region)) return false;
+  if (!query) return true;
+  const hay = (d.name + " " + d.region + " " + d.colleges.join(" ") + " " +
+    d.trustees.map(p => p.first + " " + p.last + " " + p.email + " " + p.college).join(" ")).toLowerCase();
+  return hay.includes(query);
+}
+function polyStyle(d, hover){
+  const on = visible(d);
+  const c = d.trustees.length ? regionColor(d.region) : css("--none");
+  return {
+    color: c,
+    weight: hover ? 2.6 : 1.2,
+    opacity: on ? (hover ? 1 : .85) : .12,
+    fillColor: c,
+    fillOpacity: on ? (hover ? .55 : (d.trustees.length ? .34 : .12)) : .03,
+  };
+}
+/* The map renders to canvas (preferCanvas), which is right for 72 multipolygons
+   but means CSS can't transition individual districts. So isolating a region is
+   tweened in JS instead: 220ms of interpolated opacity, one canvas redraw per
+   frame. Typing in the search box does NOT animate — search should feel instant. */
+const lastStyle = new Map();
+let tweenRAF = null;
+function reduceMotion(){
+  return !!(window.matchMedia && matchMedia("(prefers-reduced-motion: reduce)").matches);
+}
+function applyPolyStyles(animate){
+  const jobs = [];
+  for (const [name, o] of layers){
+    if (!o.poly) continue;
+    const to = polyStyle(o.d, false);
+    const from = lastStyle.get(name) || { opacity: to.opacity, fillOpacity: to.fillOpacity };
+    jobs.push([o, name, from, to]);
+  }
+  if (tweenRAF){ cancelAnimationFrame(tweenRAF); tweenRAF = null; }
+  // document.hidden: rAF is paused in a background tab, which would freeze the
+  // tween on its first frame and leave districts at the wrong opacity.
+  if (!animate || reduceMotion() || document.hidden){
+    for (const [o, name, , to] of jobs){
+      o.poly.setStyle(to);
+      lastStyle.set(name, { opacity: to.opacity, fillOpacity: to.fillOpacity });
+    }
+    return;
+  }
+  const t0 = performance.now(), D = 220;
+  (function step(now){
+    const k = Math.min(1, (now - t0) / D), e = k * (2 - k);   // ease-out quad
+    for (const [o, name, from, to] of jobs){
+      const op = from.opacity + (to.opacity - from.opacity) * e;
+      const fo = from.fillOpacity + (to.fillOpacity - from.fillOpacity) * e;
+      o.poly.setStyle(Object.assign({}, to, { opacity: op, fillOpacity: fo }));
+      lastStyle.set(name, { opacity: op, fillOpacity: fo });   // so an interrupted tween resumes from where it looks
+    }
+    tweenRAF = k < 1 ? requestAnimationFrame(step) : null;
+  })(t0);
+}
+function refresh(animate){
+  applyPolyStyles(animate === true);
+  for (const [, o] of layers){
+    if (o.chip){
+      const el = o.chip.getElement();
+      if (el) el.style.opacity = visible(o.d) ? 1 : .18;
+    }
+  }
+  renderList();
+  updateZoomLayers();
+}
+
+/* ---------- build map layers ---------- */
+function addDistrict(d, geom){
+  const o = { d, poly:null, chip:null };
+  let center = [d.lat, d.lng];
+  if (geom){
+    /* smoothFactor is a simplification tolerance in pixels: HIGHER means fewer
+       points drawn. The 72 districts carry ~23,000 coordinates between them
+       (Mendocino-Lake's coastline alone is 1,746), and all of them are redrawn
+       on every zoom frame. 0.6 was below Leaflet's default of 1.0, so it was
+       keeping more detail than stock and paying for it on every frame. */
+    o.poly = L.geoJSON(geom, { style: polyStyle(d, false), smoothFactor: 2 }).addTo(map);
+    o.poly.on("mouseover", () => o.poly.setStyle(polyStyle(d, true)));
+    o.poly.on("mouseout",  () => o.poly.setStyle(polyStyle(d, false)));
+    o.poly.on("click", (e) => openDistrict(d, e.latlng));
+    const c = bestCentroid(geom);
+    if (c) center = c;
+  }
+  o.center = center;
+  const n = d.trustees.length;
+  const bg = n ? regionColor(d.region) : css("--none");
+  o.chip = L.marker(center, {
+    pane: "chips",
+    icon: L.divIcon({
+      className: "",
+      html: `<div class="dchip${n?"":" none"}" style="background:${bg}" title="${esc(d.name)}">${d.region}${n>1?`<span class="ct">${n}</span>`:""}</div>`,
+      iconSize: null, iconAnchor: [12, 10],
+    }),
+    riseOnHover: true, keyboard: false,
+  }).addTo(map);
+  o.chip.on("click", () => openDistrict(d, center));
+  layers.set(d.name, o);
+}
+
+function openDistrict(d, latlng){
+  L.popup({ maxWidth: 340, autoPanPadding:[30,30] })
+    .setLatLng(latlng || layers.get(d.name).center)
+    .setContent(popupHTML(d))
+    .openOn(map);
+  syncHash({ d: slug(d.name) });
+}
+
+/* ---------- deep links ---------- */
+function syncHash(extra){
+  const o = Object.assign({
+    r: active.size === 1 ? [...active][0] : "",
+    q: query || "",
+  }, extra || {});
+  const parts = [];
+  if (o.d) parts.push("d=" + o.d);
+  if (o.r) parts.push("r=" + o.r);
+  if (o.q) parts.push("q=" + encodeURIComponent(o.q));
+  history.replaceState(null, "", parts.length ? "#" + parts.join("&") : location.pathname + location.search);
+}
+function readHash(){
+  const o = {};
+  location.hash.replace(/^#/, "").split("&").filter(Boolean).forEach(kv => {
+    const i = kv.indexOf("="); if (i < 0) return;
+    o[kv.slice(0, i)] = decodeURIComponent(kv.slice(i + 1));
+  });
+  return o;
+}
+document.addEventListener("click", (e) => {
+  const b = e.target.closest("[data-share]");
+  if (!b) return;
+  const url = location.href.split("#")[0] + "#d=" + b.dataset.share;
+  const msg = b.parentElement.querySelector("[data-share-msg]");
+  const done = (t) => { if (msg) msg.textContent = t; };
+  if (navigator.clipboard && navigator.clipboard.writeText)
+    navigator.clipboard.writeText(url).then(() => done("Copied to clipboard"), () => done(url));
+  else done(url);
+});
+
+function buildRegionLabels(){
+  regionLabels.forEach(m => map.removeLayer(m));
+  regionLabels.length = 0;
+  for (const r of REGIONS){
+    const pts = DATA.districts.filter(d => d.region === r)
+      .map(d => layers.get(d.name)?.center).filter(Boolean);
+    if (!pts.length) continue;
+    const lat = pts.reduce((a,p)=>a+p[0],0)/pts.length;
+    const lng = pts.reduce((a,p)=>a+p[1],0)/pts.length;
+    const m = L.marker([lat,lng], {
+      pane:"labels", interactive:false, keyboard:false,
+      icon: L.divIcon({ className:"", iconSize:null, iconAnchor:[45,16],
+        html:`<div class="rlab">REGION ${r}<i>${REGION_NAME[r]}</i></div>` })
+    });
+    regionLabels.push(m);
+  }
+  updateZoomLayers();
+}
+
+function updateZoomLayers(){
+  const z = map.getZoom();
+  const showRegion = z < 8;
+  regionLabels.forEach(m => { showRegion ? m.addTo(map) : map.removeLayer(m); });
+  for (const [, o] of layers){
+    const el = o.chip && o.chip.getElement();
+    if (el) el.style.display = (!showRegion || !o.poly) ? "" : "none";
+  }
+}
+map.on("zoomend", updateZoomLayers);
+
+/* ---------- sidebar ---------- */
+function renderList(){
+  const list = document.getElementById("list");
+  const frag = document.createDocumentFragment();
+  for (const r of REGIONS){
+    const ds = DATA.districts.filter(d => d.region === r && visible(d));
+    if (!ds.length) continue;
+    const h = document.createElement("div");
+    h.style.cssText = "padding:12px 8px 4px;font-size:10.5px;letter-spacing:.07em;text-transform:uppercase;color:var(--text-muted);font-weight:600";
+    h.textContent = `Region ${r} · ${REGION_NAME[r]}`;
+    frag.appendChild(h);
+    for (const d of ds){
+      const b = document.createElement("button");
+      b.className = "drow" + (d.trustees.length ? "" : " empty");
+      const names = d.trustees.map(p => `${p.first} ${p.last}`).join(", ");
+      b.innerHTML = `<span class="bar" style="background:${d.trustees.length?regionColor(r):css("--none")}"></span>
+        <span class="t">
+          <span class="nm">${esc(d.name)}</span>
+          <span class="sub">${names ? esc(names) : "No student trustee listed"}</span>
+        </span>`;
+      b.onclick = () => focusDistrict(d);
+      frag.appendChild(b);
+    }
+  }
+  if (!frag.childNodes.length){
+    const p = document.createElement("p");
+    p.style.cssText = "padding:18px 10px;color:var(--text-muted);font-size:12.5px";
+    p.textContent = "No matches.";
+    frag.appendChild(p);
+  }
+  list.replaceChildren(frag);
+}
+
+function focusDistrict(d){
+  const o = layers.get(d.name);
+  if (o && o.poly){
+    map.fitBounds(o.poly.getBounds(), { padding:[70,70], maxZoom:11 });
+    setTimeout(() => openDistrict(d), 260);
+  } else {
+    map.setView(o ? o.center : [d.lat,d.lng], 10);
+    setTimeout(() => openDistrict(d), 260);
+  }
+  if (window.innerWidth <= 860) document.getElementById("side").classList.remove("on");
+}
+
+function renderChips(){
+  const wrap = document.getElementById("chips");
+  wrap.replaceChildren();
+  for (const r of REGIONS){
+    const n = DATA.districts.filter(d => d.region===r).reduce((a,d)=>a+d.trustees.length,0);
+    const b = document.createElement("button");
+    b.className = "chip"; b.setAttribute("aria-pressed", active.has(r));
+    b.innerHTML = `<span class="sw" style="background:${regionColor(r)}"></span><span>Region ${r}</span><span class="n">${n}</span>`;
+    b.onclick = (e) => {
+      if (active.size === REGIONS.length && !e.shiftKey){ active.clear(); active.add(r); }
+      else if (active.has(r)){ active.delete(r); if (!active.size) REGIONS.forEach(x=>active.add(x)); }
+      else active.add(r);
+      renderChips(); refresh(true); syncHash({ d:"" });
+    };
+    wrap.appendChild(b);
+  }
+}
+
+/* ---------- table view ---------- */
+function renderTable(){
+  const rows = [];
+  for (const d of DATA.districts)
+    for (const p of d.trustees)
+      rows.push({ ...p, region:d.region });
+  rows.sort((a,b) => a.last.localeCompare(b.last));
+  document.getElementById("t-count").textContent = `${rows.length} people · ${DATA.districts.length} districts`;
+  document.getElementById("tbl").innerHTML =
+    `<thead><tr><th>Region</th><th>First name</th><th>Last name</th>${showEmails?"<th>Email</th>":""}<th>District</th><th>College</th></tr></thead><tbody>` +
+    rows.map(r => `<tr>
+      <td class="rgc"><span class="sw-dot" style="background:${regionColor(r.region)}"></span>${r.region}</td>
+      <td>${esc(r.first)}</td><td>${esc(r.last)}</td>
+      ${showEmails ? (r.email ? `<td><a href="mailto:${esc(r.email)}" style="color:var(--accent);text-decoration:none">${esc(r.email)}</a></td>` : `<td><span class="unk">&mdash;</span></td>`) : ""}
+      <td>${esc(r.district)}</td><td>${r.college ? esc(r.college) : "<span class=\"unk\">—</span>"}</td></tr>`).join("") + "</tbody>";
+}
+
+/* ---------- boot ---------- */
+const intro = document.getElementById("intro");
+document.getElementById("intro-go").onclick = () => intro.classList.add("off");
+
+document.getElementById("q").addEventListener("input", (e) => {
+  query = e.target.value.trim().toLowerCase(); refresh(); syncHash({ d:"" });
+});
+document.getElementById("reset").onclick = () => {
+  REGIONS.forEach(r => active.add(r));
+  document.getElementById("q").value = ""; query = "";
+  renderChips(); refresh(true); syncHash({ d:"" });
+  map.setView([37.3,-119.4], 6);
+};
+document.getElementById("btn-side").onclick = () =>
+  document.getElementById("side").classList.toggle("on");
+const sheet = document.getElementById("sheet"), btnTable = document.getElementById("btn-table");
+btnTable.onclick = () => {
+  const on = !sheet.classList.contains("on");
+  sheet.classList.toggle("on", on); btnTable.setAttribute("aria-pressed", on);
+};
+document.getElementById("t-close").onclick = () => {
+  sheet.classList.remove("on"); btnTable.setAttribute("aria-pressed", false);
+};
+if (!ALLOW_EMAILS){
+  showEmails = false;
+  document.getElementById("q").placeholder = "Search trustee, district, college…";
+}
+
+function banner(text, kind){
+  const b = document.getElementById("banner");
+  if (!text){ b.style.display = "none"; return; }
+  b.style.display = "flex";
+  b.className = "banner" + (kind === "err" ? " err" : "");
+  b.innerHTML = (kind ? "" : '<span class="spin"></span>') + `<span>${text}</span>`;
+  if (kind === "err"){
+    const x = document.createElement("button");
+    x.className = "btn"; x.textContent = "Dismiss";
+    x.onclick = () => b.style.display = "none";
+    b.appendChild(x);
+  }
+}
+
+async function tryUrl(url){
+  const res = await fetch(url, { mode:"cors" });
+  if (!res.ok) throw new Error("HTTP " + res.status);
+  const gj = await res.json();
+  if (gj.error) throw new Error("service error " + (gj.error.code || ""));
+  if (!gj.features || !gj.features.length) throw new Error("no features returned");
+  return gj;
+}
+async function loadBoundaries(){
+  const alt = BOUNDARY_URL.replace("&maxAllowableOffset=0.0012&geometryPrecision=5", "");
+  try { return await tryUrl(BOUNDARY_URL); }
+  catch (e){ console.warn("simplified query failed, retrying full geometry:", e); return await tryUrl(alt); }
+}
+
+/* ---------- reveal ----------
+   Districts fade in north to south over ~850ms. The delay is per element and is
+   cleared once the reveal is done, so the region-filter crossfade that uses the
+   same properties later isn't dragged behind a stale transition-delay. */
+/* Only arm the reveal when we actually intend to play it. A hidden tab pauses
+   both rAF and CSS transitions, so arming there could leave the map hidden until
+   the tab is focused; not arming means there is nothing to go wrong. */
+function armReveal(){
+  if (reduceMotion() || document.hidden) return false;
+  document.body.classList.add("reveal-armed");
+  return true;
+}
+function revealDistricts(){
+  if (!document.body.classList.contains("reveal-armed")) return;
+  const els = [];
+  for (const [, o] of layers){
+    const lat = (o.center && o.center[0]) || 0;
+    const ce = o.chip && o.chip.getElement();
+    const chip = ce && ce.querySelector(".dchip");
+    if (chip) els.push([lat, chip]);
+  }
+  /* Once the reveal has played, take the classes back off. Leaving them on would
+     leave a permanent `transition: opacity` on the boundary canvas and on all 72
+     chips, which is dead weight on every subsequent zoom. */
+  const finish = () => {
+    els.forEach(([, e]) => { e.style.transitionDelay = ""; });
+    document.body.classList.remove("reveal-armed", "reveal-on");
+  };
+  if (!els.length){ document.body.classList.add("reveal-on"); finish(); return; }
+
+  els.sort((a, b) => b[0] - a[0]);          // Del Norte first, Imperial last
+  const SPAN = 850;
+  els.forEach(([, e], i) => { e.style.transitionDelay = Math.round(i / els.length * SPAN) + "ms"; });
+  requestAnimationFrame(() => requestAnimationFrame(() => {
+    document.body.classList.add("reveal-on");
+    setTimeout(finish, SPAN + 700);
+  }));
+}
+
+(async function init(){
+  renderChips(); renderTable();
+  if (armReveal()){
+    // failsafe: if anything below throws, the map must not stay invisible
+    setTimeout(() => {
+      if (document.body.classList.contains("reveal-armed")) document.body.classList.add("reveal-on");
+    }, 4000);
+  }
+  let gj = null;
+  try { gj = await loadBoundaries(); }
+  catch (err){ usingFallback = true; console.warn("boundary load failed:", err); }
+
+  const used = new Set(); const unmatched = [];
+  if (gj){
+    for (const f of gj.features){
+      const raw = f.properties.DistrictNa || f.properties.ShortName || "";
+      const d = matchDistrict(raw);
+      if (!d){ unmatched.push(raw); continue; }
+      if (used.has(d.name)) continue;
+      used.add(d.name);
+      addDistrict(d, f.geometry);
+    }
+  }
+  for (const d of DATA.districts) if (!used.has(d.name)) addDistrict(d, null);
+  buildRegionLabels();
+
+  const h = readHash();
+  if (h.r && REGIONS.indexOf(h.r) > -1){ active.clear(); active.add(h.r); renderChips(); }
+  if (h.q){ document.getElementById("q").value = h.q; query = h.q.toLowerCase(); }
+  if (h.d || h.r || h.q) intro.classList.add("off");
+  refresh();
+  revealDistricts();
+  if (h.d && bySlug.has(h.d)) focusDistrict(bySlug.get(h.d));
+
+  if (usingFallback){
+    banner("Couldn’t reach the state GIS service, so district outlines aren’t drawn — " +
+           "trustee pins are placed at each district’s main campus instead. Reload while online to get the boundaries.", "err");
+  } else if (used.size < DATA.districts.length){
+    banner(`${used.size} of ${DATA.districts.length} district outlines loaded; the rest are shown as pins.`, "err");
+  } else {
+    banner(null);
+  }
+  console.log("outlined:", used.size, "of", DATA.districts.length, "unmatched source names:", unmatched);
+})();
+</script>
+</body>
+</html>

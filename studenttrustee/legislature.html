@@ -1,0 +1,360 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+<meta charset="utf-8">
+<meta name="viewport" content="width=device-width, initial-scale=1">
+<title>Legislative Calendars · California &amp; Congress | Who Represents You</title>
+<meta name="description" content="The 2026 California legislative calendar, a House-vs-Senate comparison of the congressional calendar, and direct links to find your state and federal representatives.">
+<meta property="og:type" content="website">
+<meta property="og:site_name" content="studenttrustee.net">
+<meta property="og:title" content="Legislative Calendars · California &amp; Congress">
+<meta property="og:description" content="2026 California session deadlines, where the House and Senate calendars differ, and how to find your representatives.">
+<meta name="theme-color" content="#ffffff">
+<style>
+  :root{
+    /* Monochrome chrome. Region hues are the only colour on the page — they carry data. */
+    --surface-1:#ffffff; --plane:#f6f6f6; --panel:#ffffff;
+    --text-primary:#0a0a0a; --text-secondary:#4a4a4a; --text-muted:#8a8a8a;
+    --rule:#e3e3e3; --ring:rgba(0,0,0,0.16); --shadow:0 1px 2px rgba(0,0,0,.06),0 8px 24px rgba(0,0,0,.09);
+    --accent:#0a0a0a; --gold:#0a0a0a; --none:#b0b0b0;
+    --r1:#eda100; --r2:#4a3aa7; --r3:#1baf7a; --r4:#9c27b0; --r5:#008300;
+    --r6:#e87ba4; --r7:#2a78d6; --r8:#eb6834; --r9:#0e8fae; --r10:#e34948;
+  }
+  *{box-sizing:border-box}
+  html,body{margin:0}
+  body{
+    font-family:system-ui,-apple-system,"Segoe UI",sans-serif;
+    background:var(--plane); color:var(--text-primary);
+    -webkit-font-smoothing:antialiased; line-height:1.5;
+  }
+  header{
+    position:sticky; top:0; z-index:10;
+    display:flex; align-items:center; gap:16px; padding:10px 20px;
+    background:var(--surface-1); border-bottom:1px solid var(--rule);
+    border-top:2px solid var(--text-primary);
+  }
+  .brand h1{font-size:15px;margin:0;font-weight:650;letter-spacing:-.01em}
+  .brand p{margin:0;font-size:11.5px;color:var(--text-muted)}
+  .brand a.home{color:var(--accent);text-decoration:underline;text-underline-offset:2px;font-weight:600}
+  .brand a.home:hover{text-decoration:underline}
+  .grow{flex:1}
+  nav a{
+    font-size:12.5px;color:var(--text-secondary);text-decoration:none;
+    border:1px solid var(--rule);border-radius:8px;padding:6px 11px;margin-left:6px;
+    display:inline-block;background:var(--panel);white-space:nowrap;
+  }
+  nav a:hover{color:var(--text-primary)}
+  nav a[aria-current]{background:var(--text-primary);border-color:var(--text-primary);color:var(--surface-1);font-weight:640}
+  button.btn{
+    font:inherit;font-size:12.5px;color:var(--text-secondary);background:var(--panel);
+    border:1px solid var(--rule);border-radius:8px;padding:6px 11px;cursor:pointer;margin-left:6px;
+  }
+  main{max-width:1000px;margin:0 auto;padding:30px 20px 80px}
+  .lede{font-size:15px;color:var(--text-secondary);max-width:60ch;margin:0 0 30px}
+  .grp{margin:0 0 30px}
+  .grp h2{
+    font-size:11px;text-transform:uppercase;letter-spacing:.08em;color:var(--text-muted);
+    font-weight:600;margin:0 0 10px;
+  }
+  .cards{display:grid;grid-template-columns:repeat(auto-fit,minmax(270px,1fr));gap:10px}
+  .card{
+    display:block;padding:14px 15px;border-radius:11px;text-decoration:none;
+    background:var(--surface-1);border:1px solid var(--rule);
+  }
+  .card:hover{border-color:var(--accent)}
+  .card .t{display:block;font-size:14px;font-weight:640;color:var(--text-primary)}
+  .card .arr{color:var(--text-muted);font-weight:400}
+  .card .d{display:block;font-size:12.5px;color:var(--text-secondary);margin-top:4px;line-height:1.45}
+  .card.hero{border-color:var(--accent);box-shadow:inset 3px 0 0 var(--accent)}
+  h2.big{font-size:20px;font-weight:650;letter-spacing:-.015em;margin:44px 0 4px;text-transform:none;color:var(--text-primary)}
+  .sub{font-size:13px;color:var(--text-muted);margin:0 0 18px}
+  .next{
+    display:flex;gap:12px;align-items:baseline;flex-wrap:wrap;
+    background:var(--surface-1);border:1px solid var(--accent);border-radius:11px;
+    padding:13px 15px;margin:0 0 20px;
+  }
+  .next b{font-size:11px;text-transform:uppercase;letter-spacing:.07em;color:var(--text-primary)}
+  .next .n{font-size:15px;font-weight:640}
+  .next .c{font-size:12.5px;color:var(--text-secondary)}
+  ul.tl{list-style:none;margin:0;padding:0;border-left:2px solid var(--rule);}
+  .ev{display:flex;gap:16px;padding:11px 0 11px 18px;position:relative}
+  .ev::before{
+    content:"";position:absolute;left:-5px;top:19px;width:8px;height:8px;border-radius:50%;
+    background:var(--rule);
+  }
+  .ev.past{opacity:.42}
+  .ev.is-next::before{background:var(--accent);box-shadow:0 0 0 3px var(--plane),0 0 0 5px var(--accent)}
+  .when{flex:none;width:132px}
+  .when .d{display:block;font-size:13px;font-weight:640;font-variant-numeric:tabular-nums}
+  .when .tag{font-size:10px;text-transform:uppercase;letter-spacing:.06em;color:var(--text-muted);font-weight:600}
+  .ev[data-kind="major"] .tag{color:var(--r10)}
+  .ev[data-kind="budget"] .tag{color:var(--r5)}
+  .ev[data-kind="recess"] .tag,.ev[data-kind="session"] .tag{color:var(--r7)}
+  .ev[data-kind="election"] .tag{color:var(--r2)}
+  .what h3{margin:0;font-size:14px;font-weight:600}
+  .what p{margin:2px 0 0;font-size:12.5px;color:var(--text-secondary)}
+  .ev[data-kind="major"] .what h3{font-weight:680}
+  /* --- Congress comparison --- */
+  ul.cmp{list-style:none;margin:0;padding:0;display:grid;gap:10px}
+  .crow{
+    display:grid;grid-template-columns:190px 1fr 1fr;gap:0 18px;
+    background:var(--surface-1);border:1px solid var(--rule);border-radius:11px;padding:14px 16px;
+  }
+  .crow .per h3{margin:0;font-size:14px;font-weight:660;letter-spacing:-.01em}
+  .crow .per .w{
+    display:block;margin-top:3px;font-size:11.5px;color:var(--text-muted);
+    font-variant-numeric:tabular-nums;letter-spacing:.01em;
+  }
+  .crow .ch{border-left:1px solid var(--rule);padding-left:18px}
+  .crow .cl{
+    display:block;font-size:10px;text-transform:uppercase;letter-spacing:.07em;
+    font-weight:700;color:var(--text-muted);margin-bottom:3px;
+  }
+  .crow .ch p{margin:0;font-size:13px;color:var(--text-primary);line-height:1.45}
+  .crow .why{
+    grid-column:1 / -1;margin:12px 0 0;padding-top:11px;border-top:1px solid var(--rule);
+    font-size:12.5px;color:var(--text-secondary);line-height:1.5;
+  }
+  .crow .unconf{
+    font-size:8.5px;letter-spacing:.06em;text-transform:uppercase;font-weight:700;
+    color:var(--text-muted);border:1px solid var(--rule);border-radius:20px;
+    padding:1px 5px;margin-left:5px;vertical-align:1px;
+  }
+  ul.earlier{list-style:none;margin:14px 0 0;padding:0;display:grid;gap:8px}
+  ul.earlier li{
+    display:flex;gap:14px;align-items:baseline;font-size:12.5px;
+    border-left:2px solid var(--rule);padding:2px 0 2px 12px;color:var(--text-secondary);
+  }
+  ul.earlier b{
+    flex:none;width:118px;color:var(--text-primary);font-weight:640;
+    font-variant-numeric:tabular-nums;
+  }
+  @media (max-width:620px){ ul.earlier li{flex-direction:column;gap:2px} ul.earlier b{width:auto} }
+  ul.same{
+    list-style:none;margin:16px 0 0;padding:0;
+    display:grid;grid-template-columns:repeat(auto-fit,minmax(200px,1fr));gap:8px;
+  }
+  ul.same li{
+    display:flex;gap:9px;align-items:baseline;font-size:12.5px;
+    border:1px dashed var(--rule);border-radius:9px;padding:9px 12px;
+  }
+  ul.same b{font-variant-numeric:tabular-nums;font-weight:640;white-space:nowrap}
+  ul.same span{color:var(--text-secondary)}
+  .srcnote{
+    margin:16px 0 0;font-size:12px;color:var(--text-muted);line-height:1.6;
+    border-left:2px solid var(--rule);padding-left:12px;
+  }
+  .srcnote b{color:var(--text-secondary);font-weight:640}
+  @media (max-width:760px){
+    .crow{grid-template-columns:1fr;gap:0}
+    .crow .per{margin-bottom:10px}
+    .crow .ch{border-left:0;padding-left:0;margin-top:9px}
+  }
+  footer{
+    border-top:1px solid var(--rule);margin-top:46px;padding-top:16px;
+    font-size:11.5px;color:var(--text-muted);line-height:1.6;
+  }
+  footer a{color:var(--text-secondary)}
+  footer a.home{color:var(--accent);font-weight:600;text-decoration:underline;text-underline-offset:2px}
+  @media (max-width:620px){
+    .when{width:96px} main{padding:22px 15px 60px} .brand p{display:none}
+  }
+
+/* ============ expression layer ============ */
+
+/* 1. Nothing is a rounded card. Edges are hairlines, not boxes. */
+.card, .door, .crow, .pri, .facts, .contact, .soc, .strip, .strip div,
+.next, ul.same li, .more a, .figure, .hero img, .pop, .intro,
+.btn, button.btn, nav a, header a.nv, .cta, .enter, .search input,
+.search button, input, .sheet, aside, .rw {
+  border-radius: 0 !important;
+  box-shadow: none !important;
+}
+
+/* 2. Type carries the structure: larger, tighter, more confident. */
+h1 { letter-spacing: -.042em !important; font-weight: 680 !important; }
+h2.big, .hero h2 { letter-spacing: -.03em !important; font-weight: 660 !important; }
+.door h3, .card .t, .crow .per h3 { letter-spacing: -.018em !important; }
+
+/* 3. Micro-labels are uppercase and letterspaced — the counterweight to big type. */
+.grp h2, main .stat span, .strip span, .eyebrow, .door .k, .crow .cl,
+.when .tag, .sub, .contact .l, .soc .l {
+  text-transform: uppercase;
+  letter-spacing: .13em !important;
+  font-size: 10px !important;
+  font-weight: 650 !important;
+}
+/* ...except where it would wreck a sentence. */
+.sub, p.sub { text-transform: none; letter-spacing: 0 !important; font-size: 13px !important;
+              font-weight: 400 !important; }
+
+/* 4. Point at one thing, everything else recedes. */
+.doors:hover .door:not(:hover),
+.cards:hover .card:not(:hover),
+ul.cmp:hover .crow:not(:hover),
+.pris:hover .pri:not(:hover),
+.socials:hover .soc:not(:hover) { opacity: .34; }
+.door, .card, .crow, .pri, .soc { transition: opacity .22s ease, border-color .22s ease; }
+
+/* 5. Hairline rules instead of borders where a full box is too much. */
+.stats { border-top: 1px solid var(--rule); border-bottom: 1px solid var(--rule); }
+
+/* 6. Buttons: flat, letterspaced, no chrome. */
+.cta, .enter, .search button {
+  text-transform: uppercase; letter-spacing: .12em; font-size: 12px !important; font-weight: 650;
+}
+.btn, button.btn, nav a { letter-spacing: .04em; }
+
+/* 6b. The map header is a toolbar: it must stay on one line.
+   Scoped to the map only. On the other pages the same rule was clipping
+   the page title, so here the heading is allowed to wrap. */
+header .brand { min-width: 0; }
+header .brand h1, header .brand p {
+  white-space: normal; overflow: visible; text-overflow: clip;
+}
+header .stat span { text-transform: none; letter-spacing: 0; }
+/* below this width the toolbar buttons need the room more than the counters do */
+@media (max-width: 1280px) { header .stats { display: none; } }
+
+/* 7. The map's own surfaces join the ground rather than floating above it. */
+.leaflet-container { background: var(--plane) !important; }
+.leaflet-control-zoom a { border-radius: 0 !important; }
+
+/* ===== comment pass: light only, no boxes, stacked lists ===== */
+footer a.fix{color:inherit;text-decoration:underline;text-underline-offset:2px}
+footer a.fix:hover{color:inherit}
+
+/* #1 + #7: box grids become stacked rows separated by hairlines. */
+.doors,.pris,.cards,.socials{
+  display:block !important;grid-template-columns:none !important;gap:0 !important;
+  border-top:1px solid var(--rule);margin-top:34px;
+}
+.door,.pri,.card,.soc{
+  display:block !important;background:none !important;border:0 !important;
+  border-bottom:1px solid var(--rule) !important;padding:18px 0 !important;margin:0 !important;
+}
+.door:hover,.pri:hover,.card:hover,.soc:hover{background:none !important;border-color:var(--rule) !important}
+/* non-clickable rows get no pointer affordance at all */
+.pri{cursor:default}
+.pris:hover .pri:not(:hover){opacity:1 !important}
+/* clickable rows still signal, but with type not chrome */
+a.door:hover .t,a.door:hover h3,a.card:hover .t,a.soc:hover .h{text-decoration:underline;text-underline-offset:3px}
+
+/* #5: contact block is plain text, always present, never a button. */
+.contact{
+  display:block !important;background:none !important;border:0 !important;
+  border-top:1px solid var(--rule) !important;border-bottom:1px solid var(--rule) !important;
+  padding:18px 0 !important;
+}
+.contact:hover{background:none !important}
+
+/* ---- brand logo integration (added; nothing above this line was changed) ---- */
+.mark img.st-wordmark{display:block;height:22px;width:auto}
+.st-home{display:inline-flex;align-items:center;flex:none;margin-right:12px;text-decoration:none;line-height:0}
+.st-home img{display:block;height:26px;width:auto}
+@media (max-width:640px){.mark img.st-wordmark{height:18px}.st-home img{height:21px}.st-home{margin-right:9px}}
+</style>
+<meta property="og:image" content="https://studenttrustee.net/brand/og-card.png">
+<meta property="og:image:width" content="1200">
+<meta property="og:image:height" content="630">
+<meta name="twitter:card" content="summary_large_image">
+<link rel="icon" href="/brand/poppy-p6.ico" sizes="48x48">
+<link rel="icon" href="/brand/poppy-p6.svg" sizes="any" type="image/svg+xml">
+<link rel="apple-touch-icon" sizes="180x180" href="/brand/poppy-180-p6.png">
+<link rel="mask-icon" href="/brand/poppy-mask-p6.svg" color="#CC480D">
+<link rel="manifest" href="/site-p6.webmanifest">
+</head>
+<body>
+<header>
+  <a class="st-home" href="/" aria-label="StudentTrustee.net home"><img src="/brand/poppy-symbol.png" alt="" width="512" height="512"></a>
+  <div class="brand">
+    <h1>California Legislature</h1>
+    <p>Session calendars &amp; who represents you</p>
+  </div>
+  <div class="grow"></div>
+  <nav>
+    <a href="/">Home</a>
+    <a href="/map">District map</a>
+    <a href="/legislature" aria-current="page">Legislature</a>
+    <a href="/about">About</a>
+  </nav>
+</header>
+
+<main>
+  <p class="lede">Knowing who represents your district and when key decisions are being made is
+  essential to effective advocacy. Use the resources below to find your state and federal
+  representatives, follow legislative calendars, and identify the right time to engage. All links
+  lead to official government sources.</p>
+
+  <section class="grp"><h2>California · know who represents you</h2><div class="cards"><a class="card hero" href="https://findyourrep.legislature.ca.gov/" target="_blank" rel="noopener"><span class="t">Find your representative <span class="arr">↗</span></span><span class="d">Enter a California address, get both your Assemblymember and your State Senator. Start here.</span></a><a class="card" href="https://www.assembly.ca.gov/assemblymembers" target="_blank" rel="noopener"><span class="t">Assembly members <span class="arr">↗</span></span><span class="d">All 80 Assemblymembers with district, party, and Capitol office. Sortable by name, district, or party.</span></a><a class="card" href="https://www.senate.ca.gov/senators" target="_blank" rel="noopener"><span class="t">State senators <span class="arr">↗</span></span><span class="d">All 40 senators with Capitol and district offices, phone numbers, and contact forms.</span></a></div></section><section class="grp"><h2>California · committees</h2><div class="cards"><a class="card" href="https://www.assembly.ca.gov/committees" target="_blank" rel="noopener"><span class="t">Assembly committees <span class="arr">↗</span></span><span class="d">Where Assembly bills are heard. Committees are the main point of public input on legislation.</span></a><a class="card" href="https://www.senate.ca.gov/committees" target="_blank" rel="noopener"><span class="t">Senate committees <span class="arr">↗</span></span><span class="d">25 standing committees plus select and joint committees, including Education.</span></a></div></section><section class="grp"><h2>California · reference</h2><div class="cards"><a class="card" href="https://www.assembly.ca.gov/resources" target="_blank" rel="noopener"><span class="t">Assembly resources <span class="arr">↗</span></span><span class="d">Glossary, the legislative process explained, bill search, Daily File, and materials for students.</span></a><a class="card" href="https://clerk.assembly.ca.gov/sites/clerk.assembly.ca.gov/files/2026-01/2026-calendar.pdf" target="_blank" rel="noopener"><span class="t">Assembly 2026 calendar (PDF) <span class="arr">↗</span></span><span class="d">The Assembly Chief Clerk’s copy of the 2026 Tentative Legislative Calendar, a joint Assembly and Senate document.</span></a><a class="card" href="https://www.senate.ca.gov/system/files/2025-10/2026-senate-legislative-deadlines.pdf" target="_blank" rel="noopener"><span class="t">Senate 2026 calendar (PDF) <span class="arr">↗</span></span><span class="d">The Senate’s copy of that same joint calendar. It is the source for the timeline above.</span></a></div></section><section class="grp"><h2>Federal · know who represents you</h2><div class="cards"><a class="card hero" href="https://www.house.gov/representatives/find-your-representative" target="_blank" rel="noopener"><span class="t">Find your U.S. Representative <span class="arr">↗</span></span><span class="d">Enter a ZIP code to get your member of Congress, with links to their site and contact form.</span></a><a class="card" href="https://www.senate.gov/senators/senators-contact.htm" target="_blank" rel="noopener"><span class="t">Contact your U.S. Senators <span class="arr">↗</span></span><span class="d">All 100 senators by state, with contact forms, D.C. addresses, and phone numbers.</span></a></div></section><section class="grp"><h2>Federal · committees &amp; bills</h2><div class="cards"><a class="card" href="https://www.house.gov/committees" target="_blank" rel="noopener"><span class="t">House committees <span class="arr">↗</span></span><span class="d">26 committees in all: 20 standing, 2 select, and 4 joint, including Education and Workforce.</span></a><a class="card" href="https://www.senate.gov/committees/" target="_blank" rel="noopener"><span class="t">Senate committees <span class="arr">↗</span></span><span class="d">20 permanent committees plus joint and select, including Health, Education, Labor &amp; Pensions.</span></a><a class="card" href="https://www.congress.gov/" target="_blank" rel="noopener"><span class="t">Congress.gov <span class="arr">↗</span></span><span class="d">The official source for federal bills, laws, and legislative status. Search or track any bill.</span></a></div></section><section class="grp"><h2>Federal · calendars</h2><div class="cards"><a class="card" href="https://www.majorityleader.gov/house-legislative-calendar-2026/" target="_blank" rel="noopener"><span class="t">2026 House calendar <span class="arr">↗</span></span><span class="d">Official session and recess days from the Majority Leader's office, with PDF downloads.</span></a><a class="card" href="https://www.senate.gov/legislative/2026_schedule.htm" target="_blank" rel="noopener"><span class="t">2026 Senate schedule <span class="arr">↗</span></span><span class="d">The Senate's own 2026 schedule. It lists the state work periods and holidays when the Senate is NOT sitting; everything else is a session week.</span></a><a class="card" href="https://www.congress.gov/calendars-and-schedules" target="_blank" rel="noopener"><span class="t">Floor calendars &amp; schedules <span class="arr">↗</span></span><span class="d">Floor calendars for both chambers, from the Library of Congress.</span></a></div></section>
+
+  <h2 class="big">2026 session calendar</h2>
+  <p class="sub">Key dates for the second year of the 2025–26 session. Source: the Senate's official
+  Tentative Legislative Calendar.</p>
+
+  <div class="next" id="next" hidden>
+    <b>Next up</b><span class="n" id="next-name"></span><span class="c" id="next-when"></span>
+  </div>
+
+  <ul class="tl">
+    <li class="ev" data-date="2026-01-01" data-kind=""><div class="when"><span class="d"></span><span class="tag"></span></div><div class="what"><h3>Statutes take effect</h3><p>Bills enacted on or before Oct 2, 2025 take effect today. Urgency statutes and bills with their own operative dates are the exceptions.</p></div></li><li class="ev" data-date="2026-01-05" data-kind="session"><div class="when"><span class="d"></span><span class="tag">In session</span></div><div class="what"><h3>Legislature reconvenes</h3><p>Second year of the two-year session begins.</p></div></li><li class="ev" data-date="2026-01-10" data-kind="budget"><div class="when"><span class="d"></span><span class="tag">Budget</span></div><div class="what"><h3>Governor's budget proposal</h3><p>Constitutional deadline to submit the budget.</p></div></li><li class="ev" data-date="2026-01-16" data-kind="deadline"><div class="when"><span class="d"></span><span class="tag">Deadline</span></div><div class="what"><h3>Policy committees: 2-year fiscal bills</h3><p>Last day to report 2025 fiscal bills to fiscal committees. They go to Appropriations, not to the Floor.</p></div></li><li class="ev" data-date="2026-01-23" data-kind="deadline"><div class="when"><span class="d"></span><span class="tag">Deadline</span></div><div class="what"><h3>Committees: 2-year bills to the Floor</h3><p>Last day to report bills introduced in 2025.</p></div></li><li class="ev" data-date="2026-01-31" data-kind="deadline"><div class="when"><span class="d"></span><span class="tag">Deadline</span></div><div class="what"><h3>House passage of 2-year bills</h3><p>Each house must pass its own 2025 bills.</p></div></li><li class="ev" data-date="2026-02-20" data-kind="deadline"><div class="when"><span class="d"></span><span class="tag">Deadline</span></div><div class="what"><h3>Bill introduction deadline</h3><p>Last day for new bills to be introduced this session.</p></div></li><li class="ev" data-date="2026-03-26" data-kind="recess"><div class="when"><span class="d"></span><span class="tag">Recess</span></div><div class="what"><h3>Spring recess begins</h3></div></li><li class="ev" data-date="2026-04-06" data-kind="session"><div class="when"><span class="d"></span><span class="tag">In session</span></div><div class="what"><h3>Legislature reconvenes</h3><p>Back from spring recess.</p></div></li><li class="ev" data-date="2026-04-24" data-kind="deadline"><div class="when"><span class="d"></span><span class="tag">Deadline</span></div><div class="what"><h3>Policy committees: fiscal bills</h3><p>Last day to report fiscal bills to fiscal committees. Most education bills carry a cost, so they go to Appropriations here, not to the Floor.</p></div></li><li class="ev" data-date="2026-05-01" data-kind="deadline"><div class="when"><span class="d"></span><span class="tag">Deadline</span></div><div class="what"><h3>Policy committees: non-fiscal bills</h3><p>Last day to report non-fiscal bills to the Floor. These skip Appropriations.</p></div></li><li class="ev" data-date="2026-05-15" data-kind="deadline"><div class="when"><span class="d"></span><span class="tag">Deadline</span></div><div class="what"><h3>Fiscal committees to the Floor</h3><p>Last day to report bills from their house.</p></div></li><li class="ev" data-date="2026-05-29" data-kind="major"><div class="when"><span class="d"></span><span class="tag">Key deadline</span></div><div class="what"><h3>House passage deadline</h3><p>Last day for each house to pass its own bills. The biggest cutoff of the year.</p></div></li><li class="ev" data-date="2026-06-15" data-kind="budget"><div class="when"><span class="d"></span><span class="tag">Budget</span></div><div class="what"><h3>Budget Bill must pass</h3><p>Constitutional midnight deadline.</p></div></li><li class="ev" data-date="2026-06-25" data-kind="major"><div class="when"><span class="d"></span><span class="tag">Key deadline</span></div><div class="what"><h3>Ballot measure qualification</h3><p>Last day for a legislative measure to qualify for the Nov 3 ballot. School bonds and education measures die here.</p></div></li><li class="ev" data-date="2026-07-02" data-kind="recess"><div class="when"><span class="d"></span><span class="tag">Recess</span></div><div class="what"><h3>Policy committee deadline, then summer recess</h3><p>Last day for policy committees to meet and report bills. Recess begins on adjournment, but only if the Budget Bill has passed.</p></div></li><li class="ev" data-date="2026-08-03" data-kind="session"><div class="when"><span class="d"></span><span class="tag">In session</span></div><div class="what"><h3>Legislature reconvenes</h3><p>Back from summer recess.</p></div></li><li class="ev" data-date="2026-08-14" data-kind="deadline"><div class="when"><span class="d"></span><span class="tag">Deadline</span></div><div class="what"><h3>Fiscal committees: final reports</h3><p>Last day to report bills to the Floor.</p></div></li><li class="ev" data-date="2026-08-21" data-kind="deadline"><div class="when"><span class="d"></span><span class="tag">Deadline</span></div><div class="what"><h3>Last day to amend on the Floor</h3></div></li><li class="ev" data-date="2026-08-31" data-kind="major"><div class="when"><span class="d"></span><span class="tag">Key deadline</span></div><div class="what"><h3>Final passage deadline</h3><p>Last day for each house to pass bills; final recess begins.</p></div></li><li class="ev" data-date="2026-09-30" data-kind="major"><div class="when"><span class="d"></span><span class="tag">Key deadline</span></div><div class="what"><h3>Governor's action deadline</h3><p>Last day to sign or veto bills passed before Sept 1 that reached the Governor on or after Sept 1. Bills delivered earlier run on the 12-day rule instead.</p></div></li><li class="ev" data-date="2026-10-02" data-kind="deadline"><div class="when"><span class="d"></span><span class="tag">Deadline</span></div><div class="what"><h3>Effective-date cutoff</h3><p>Bills enacted on or before today take effect Jan 1, 2027. Later ones wait.</p></div></li><li class="ev" data-date="2026-11-03" data-kind="election"><div class="when"><span class="d"></span><span class="tag">Election</span></div><div class="what"><h3>General Election</h3></div></li><li class="ev" data-date="2026-11-30" data-kind="major"><div class="when"><span class="d"></span><span class="tag">Key deadline</span></div><div class="what"><h3>Adjournment sine die</h3><p>The 2025–26 session ends at midnight.</p></div></li>
+  </ul>
+
+  <h2 class="big">Congress &middot; where the two chambers differ</h2>
+  <p class="sub">The House and Senate set their calendars separately, and in 2026 they diverge more than
+  they line up. Below is what is still ahead this year.</p>
+
+  <ul class="cmp">
+    <li class="crow"><div class="per"><h3>Back from summer</h3><span class="w">Aug 10 – Sep 14</span></div><div class="ch"><span class="cl">House </span><p>Away most of August; returns Aug 31 for one week, then out again.</p></div><div class="ch"><span class="cl">Senate</span><p>Out the whole stretch; returns Sep 14.</p></div><p class="why">Early September is a very short window if you need both chambers in the room.</p></li><li class="crow"><div class="per"><h3>Pre-election break</h3><span class="w">Oct 1 – Nov 9</span></div><div class="ch"><span class="cl">House </span><p>Last votes Oct 1, then more than five weeks out.</p></div><div class="ch"><span class="cl">Senate</span><p>Out Oct 5 – Nov 6.</p></div><p class="why">Both chambers clear the calendar to campaign. Election Day is Nov 3. Both return Mon Nov 9, which puts the Senate back six days after the election, not the day after.</p></li><li class="crow"><div class="per"><h3>Veterans Day week</h3><span class="w">Nov 9 – Nov 13</span></div><div class="ch"><span class="cl">House <span class="unconf" title="Not confirmed against an official machine-readable source">unconfirmed</span></span><p>Reported in session the week of Nov 9, Veterans Day included.</p></div><div class="ch"><span class="cl">Senate</span><p>Out Nov 11–13.</p></div><p class="why">The Senate takes the holiday. The House side is from reporting on the calendar, not an official list.</p></li><li class="crow"><div class="per"><h3>Thanksgiving</h3><span class="w">Nov 23 – 27</span></div><div class="ch"><span class="cl">House </span><p>Out.</p></div><div class="ch"><span class="cl">Senate</span><p>Out.</p></div><p class="why">No difference. Both chambers are away.</p></li><li class="crow"><div class="per"><h3>Year end</h3><span class="w">Dec 21 – 31</span></div><div class="ch"><span class="cl">House </span><p>No published target adjournment date.</p></div><div class="ch"><span class="cl">Senate</span><p>Out Dec 21–31; no published target adjournment date either.</p></div><p class="why">Neither chamber has published a sine die target for 2026. Year-end dates historically slip.</p></li>
+  </ul>
+
+  <p class="sub" style="margin:26px 0 0">Earlier this year</p>
+  <ul class="earlier"><li><b>Jan 30</b><span>The stopgap funding deadline was missed. Funding lapsed for four days, Jan 31 – Feb 3. A second, DHS-only lapse began Feb 14 and ran to Apr 30.</span></li><li><b>Mar 30 – Apr 10</b><span>Both chambers were out; both adjourned to Apr 13.</span></li><li><b>Jun 29 – Jul 10</b><span>The Senate was out both weeks. The House was in session Jun 29, working the run-up to July 4.</span></li></ul>
+
+  <p class="sub" style="margin:26px 0 0">Weeks both chambers are away</p>
+  <ul class="same"><li><b>Feb 16 – 20</b><span>Presidents' Day week</span></li><li><b>May 25 – 29</b><span>Memorial Day week</span></li><li><b>Nov 23 – 27</b><span>Thanksgiving week</span></li></ul>
+
+  <p class="srcnote">
+    <b>Senate, in full.</b> The Senate publishes the weeks it will not sit: Jan 1–2, Jan 19–23, Feb 16–20, Mar 30 – Apr 10, May 4–8, May 25–29, Jun 19, Jun 29 – Jul 10, Aug 10 – Sep 11, Oct 5 – Nov 6, Nov 11–13, Nov 23–27, Dec 21–31.
+    Everything else is a session week. It still holds brief pro forma sessions inside those periods,
+    and it has not published a target adjournment date for 2026.<br>
+    <b>On the House column.</b> The House publishes day-level detail only as a colour-coded PDF, and
+    reissued that calendar in March 2026, so House entries here follow reporting on it rather than an
+    official machine-readable list, and anything I could not confirm is marked. Both official calendars
+    are linked under <em>Federal · calendars</em> above; check them before you book travel.
+  </p>
+
+  <footer>
+    California dates come from the 2026 Tentative Legislative Calendar. Congressional dates come from
+    the Senate's own 2026 schedule and the House Majority Leader's calendar, reissued in March 2026.
+    All of it is tentative. Floor schedules move for funding fights, conference, and elections, so check
+    the official PDFs before you rely on a date. Links verified August 2026.
+    <p class="maint">Maintained by Nick Bonasera, Student Trustee, Contra Costa Community College District. For site corrections, <a class="fix" href="mailto:studenttrustee@4cd.edu?subject=Student%20Trustee%20Website%20Update">please reach out</a> with updated information.</p>
+  </footer>
+</main>
+
+<script>
+(function(){
+  var MON = ["Jan","Feb","Mar","Apr","May","Jun","Jul","Aug","Sep","Oct","Nov","Dec"];
+  var today = new Date(); today.setHours(0,0,0,0);
+  var evs = [].slice.call(document.querySelectorAll(".ev"));
+  var next = null;
+  evs.forEach(function(el){
+    var p = el.dataset.date.split("-");
+    var d = new Date(+p[0], +p[1]-1, +p[2]);
+    el.querySelector(".when .d").textContent = MON[d.getMonth()] + " " + d.getDate();
+    if (d < today) el.classList.add("past");
+    else if (!next) { next = {el: el, date: d}; el.classList.add("is-next"); }
+  });
+  if (next){
+    var days = Math.round((next.date - today) / 86400000);
+    document.getElementById("next-name").textContent =
+      next.el.querySelector(".what h3").textContent;
+    document.getElementById("next-when").textContent =
+      days === 0 ? "today" : days === 1 ? "tomorrow" : "in " + days + " days";
+    document.getElementById("next").hidden = false;
+  }
+})();
+</script>
+</body>
+</html>

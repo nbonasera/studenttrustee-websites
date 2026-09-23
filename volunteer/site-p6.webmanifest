@@ -1,0 +1,25 @@
+{
+  "name": "Bay Area Volunteer Guide",
+  "short_name": "Volunteer Guide",
+  "icons": [
+    {
+      "src": "/brand/poppy-192-p6.png",
+      "sizes": "192x192",
+      "type": "image/png"
+    },
+    {
+      "src": "/brand/poppy-512-p6.png",
+      "sizes": "512x512",
+      "type": "image/png"
+    },
+    {
+      "src": "/brand/poppy-p6.svg",
+      "sizes": "any",
+      "type": "image/svg+xml"
+    }
+  ],
+  "theme_color": "#ffffff",
+  "background_color": "#ffffff",
+  "display": "browser",
+  "start_url": "/"
+}

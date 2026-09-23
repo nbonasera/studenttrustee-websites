@@ -1,0 +1,249 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+<meta charset="utf-8">
+<meta name="viewport" content="width=device-width, initial-scale=1">
+<title>California Student Trustees | All 72 Community College Districts</title>
+<meta name="description" content="An interactive map of all 72 California community college districts, their boundaries, and the student trustees who represent them.">
+<meta property="og:type" content="website">
+<meta property="og:title" content="studenttrustee.net — every student trustee in California">
+<meta property="og:description" content="72 community college districts, drawn to their real boundaries, each with the student who sits on its board.">
+<meta name="theme-color" content="#ffffff">
+<meta name="google-site-verification" content="C_yLH5rpH3KM2_BNJooKPzpKXx3TGde2hibJOba_aqc">
+<style>
+  :root{
+    /* Monochrome chrome. Region hues are the only colour on the page — they carry data. */
+    --surface-1:#ffffff; --plane:#f6f6f6; --panel:#ffffff;
+    --text-primary:#0a0a0a; --text-secondary:#4a4a4a; --text-muted:#8a8a8a;
+    --rule:#e3e3e3; --ring:rgba(0,0,0,0.16); --shadow:0 1px 2px rgba(0,0,0,.06),0 8px 24px rgba(0,0,0,.09);
+    --accent:#0a0a0a; --gold:#0a0a0a; --none:#b0b0b0;
+    --r1:#eda100; --r2:#4a3aa7; --r3:#1baf7a; --r4:#9c27b0; --r5:#008300;
+    --r6:#e87ba4; --r7:#2a78d6; --r8:#eb6834; --r9:#0e8fae; --r10:#e34948;
+  }
+
+  *{box-sizing:border-box}
+  html,body{margin:0}
+  body{font-family:system-ui,-apple-system,"Segoe UI",sans-serif;background:var(--plane);
+    color:var(--text-primary);-webkit-font-smoothing:antialiased;line-height:1.5}
+  a{color:inherit}
+  .top{display:flex;align-items:center;gap:14px;padding:14px 24px;flex-wrap:wrap;
+    border-top:2px solid var(--text-primary);background:var(--surface-1);
+    border-bottom:1px solid var(--rule)}
+  .mark{display:flex;align-items:center;gap:9px;font-weight:700;letter-spacing:-.02em;font-size:15px}
+  .mark .dot{width:9px;height:9px;border-radius:50%;background:var(--text-primary)}
+  .grow{flex:1}
+  .top nav{display:flex;flex-wrap:wrap;gap:6px}
+  .top nav a{font-size:12.5px;color:var(--text-secondary);text-decoration:none;
+    border:1px solid var(--rule);border-radius:8px;padding:6px 11px;
+    background:var(--panel);display:inline-block}
+  .top nav a:hover{color:var(--text-primary);border-color:var(--text-primary)}
+  footer{border-top:1px solid var(--rule);margin-top:60px;padding:20px 24px 50px;
+    font-size:11.5px;color:var(--text-muted);max-width:1080px;margin-left:auto;margin-right:auto}
+  .cons circle{transition:opacity .2s}
+  /* the constellation carries a fixed 300px width attribute; let it scale
+     so it cannot force the hero wider than a narrow viewport */
+  .cons{max-width:100%;height:auto}
+  .hero>*{min-width:0}
+
+
+  main{max-width:1080px;margin:0 auto;padding:76px 24px 0}
+  .hero{display:grid;grid-template-columns:1fr 300px;gap:56px;align-items:start}
+  h1{font-size:60px;line-height:1.04;letter-spacing:-.035em;margin:0 0 22px;font-weight:700;max-width:15ch}
+  h1 em{font-style:normal;color:var(--text-muted)}
+  .sub{font-size:19px;color:var(--text-secondary);max-width:52ch;margin:0 0 34px;line-height:1.55}
+  .cta{display:inline-block;background:var(--text-primary);color:var(--surface-1);
+    text-decoration:none;font-weight:640;font-size:15px;padding:13px 24px;border-radius:10px}
+  .cta:hover{opacity:.85}
+  .cta2{margin-left:14px;font-size:15px;color:var(--text-secondary);text-decoration:underline;
+    text-underline-offset:3px}
+  .tally{margin:0;font-size:15px;color:var(--text-secondary);line-height:1.6;max-width:64ch}
+  .tally b{color:var(--text-primary);font-weight:680;font-variant-numeric:tabular-nums}
+  .stats{display:flex;gap:40px;margin:64px 0 0;padding:26px 0;
+    border-top:1px solid var(--rule);border-bottom:1px solid var(--rule)}
+  .stat b{display:block;font-size:34px;font-weight:680;letter-spacing:-.03em;line-height:1}
+  .stat span{display:block;font-size:11.5px;text-transform:uppercase;letter-spacing:.08em;
+    color:var(--text-muted);margin-top:7px;font-weight:600}
+  .doors{display:grid;grid-template-columns:repeat(3,1fr);gap:14px;margin-top:44px}
+  .door{display:block;text-decoration:none;background:var(--surface-1);border:1px solid var(--rule);
+    border-radius:13px;padding:22px 22px 24px}
+  .door:hover{border-color:var(--text-primary)}
+  .door .k{font-size:10.5px;text-transform:uppercase;letter-spacing:.09em;color:var(--text-muted);
+    font-weight:700}
+  .door .dh{margin:11px 0 7px;font-size:19px;letter-spacing:-.015em;font-weight:660}
+  .door p{margin:0;font-size:13.5px;color:var(--text-secondary);line-height:1.5}
+  @media(max-width:880px){.hero{grid-template-columns:1fr;gap:32px}h1{font-size:40px}
+    .doors{grid-template-columns:1fr}.stats{flex-wrap:wrap;gap:26px}}
+
+  /* ---- hero lockup (added) ---- */
+  .hero{grid-template-columns:1fr 400px}
+  .st-lockup{display:block;width:100%;height:auto;margin-top:4px}
+  @media(max-width:880px){.hero{grid-template-columns:1fr}
+    .st-lockup{max-width:320px;margin:0 auto}}
+
+
+/* ============ expression layer ============ */
+
+/* 1. Nothing is a rounded card. Edges are hairlines, not boxes. */
+.card, .door, .crow, .pri, .facts, .contact, .soc, .strip, .strip div,
+.next, ul.same li, .more a, .figure, .hero img, .pop, .intro,
+.btn, button.btn, nav a, header a.nv, .cta, .enter, .search input,
+.search button, input, .sheet, aside, .rw {
+  border-radius: 0 !important;
+  box-shadow: none !important;
+}
+
+/* 2. Type carries the structure: larger, tighter, more confident. */
+h1 { letter-spacing: -.042em !important; font-weight: 680 !important; }
+h2.big, .hero h2 { letter-spacing: -.03em !important; font-weight: 660 !important; }
+.door .dh, .card .t, .crow .per h3 { letter-spacing: -.018em !important; }
+
+/* 3. Micro-labels are uppercase and letterspaced — the counterweight to big type. */
+.grp h2, main .stat span, .strip span, .eyebrow, .door .k, .crow .cl,
+.when .tag, .sub, .contact .l, .soc .l {
+  text-transform: uppercase;
+  letter-spacing: .13em !important;
+  font-size: 10px !important;
+  font-weight: 650 !important;
+}
+/* ...except where it would wreck a sentence. */
+.sub, p.sub { text-transform: none; letter-spacing: 0 !important; font-size: 13px !important;
+              font-weight: 400 !important; }
+
+/* 4. Point at one thing, everything else recedes. */
+.doors:hover .door:not(:hover),
+.cards:hover .card:not(:hover),
+ul.cmp:hover .crow:not(:hover),
+.pris:hover .pri:not(:hover),
+.socials:hover .soc:not(:hover) { opacity: .34; }
+.door, .card, .crow, .pri, .soc { transition: opacity .22s ease, border-color .22s ease; }
+
+/* 5. Hairline rules instead of borders where a full box is too much. */
+.stats { border-top: 1px solid var(--rule); border-bottom: 1px solid var(--rule); }
+
+/* 6. Buttons: flat, letterspaced, no chrome. */
+.cta, .enter, .search button {
+  text-transform: uppercase; letter-spacing: .12em; font-size: 12px !important; font-weight: 650;
+}
+.btn, button.btn, nav a { letter-spacing: .04em; }
+
+/* 6b. The map header is a toolbar: it must stay on one line. */
+header .brand { min-width: 0; }
+header .brand h1, header .brand p {
+  white-space: nowrap; overflow: hidden; text-overflow: ellipsis;
+}
+header .stat span { text-transform: none; letter-spacing: 0; }
+/* below this width the toolbar buttons need the room more than the counters do */
+@media (max-width: 1280px) { header .stats { display: none; } }
+
+/* 7. The map's own surfaces join the ground rather than floating above it. */
+.leaflet-container { background: var(--plane) !important; }
+.leaflet-control-zoom a { border-radius: 0 !important; }
+
+/* ===== comment pass: light only, no boxes, stacked lists ===== */
+footer a.fix{color:inherit;text-decoration:underline;text-underline-offset:2px}
+footer a.fix:hover{color:inherit}
+
+/* #1 + #7: box grids become stacked rows separated by hairlines. */
+.doors,.pris,.cards,.socials{
+  display:block !important;grid-template-columns:none !important;gap:0 !important;
+  border-top:1px solid var(--rule);margin-top:34px;
+}
+.door,.pri,.card,.soc{
+  display:block !important;background:none !important;border:0 !important;
+  border-bottom:1px solid var(--rule) !important;padding:18px 0 !important;margin:0 !important;
+}
+.door:hover,.pri:hover,.card:hover,.soc:hover{background:none !important;border-color:var(--rule) !important}
+/* non-clickable rows get no pointer affordance at all */
+.pri{cursor:default}
+.pris:hover .pri:not(:hover){opacity:1 !important}
+/* clickable rows still signal, but with type not chrome */
+a.door:hover .t,a.door:hover .dh,a.card:hover .t,a.soc:hover .h{text-decoration:underline;text-underline-offset:3px}
+
+/* #5: contact block is plain text, always present, never a button. */
+.contact{
+  display:block !important;background:none !important;border:0 !important;
+  border-top:1px solid var(--rule) !important;border-bottom:1px solid var(--rule) !important;
+  padding:18px 0 !important;
+}
+.contact:hover{background:none !important}
+
+/* ---- brand logo integration (added; nothing above this line was changed) ---- */
+.mark img.st-wordmark{display:block;height:22px;width:auto}
+.st-home{display:inline-flex;align-items:center;flex:none;margin-right:12px;text-decoration:none;line-height:0}
+.st-home img{display:block;height:26px;width:auto}
+@media (max-width:640px){.mark img.st-wordmark{height:18px}.st-home img{height:21px}.st-home{margin-right:9px}}
+</style>
+<meta property="og:image" content="https://studenttrustee.net/brand/og-card.png">
+<meta property="og:image:width" content="1200">
+<meta property="og:image:height" content="630">
+<meta name="twitter:card" content="summary_large_image">
+<link rel="icon" href="/brand/poppy-p6.ico" sizes="48x48">
+<link rel="icon" href="/brand/poppy-p6.svg" sizes="any" type="image/svg+xml">
+<link rel="apple-touch-icon" sizes="180x180" href="/brand/poppy-180-p6.png">
+<link rel="mask-icon" href="/brand/poppy-mask-p6.svg" color="#CC480D">
+<link rel="manifest" href="/site-p6.webmanifest">
+</head>
+<body>
+<header class="top">
+  <div class="mark"><img class="st-wordmark" src="/brand/logo-wordmark.png" alt="StudentTrustee.net" width="1015" height="127"></div>
+  <div class="grow"></div>
+  <nav>
+    <a href="/" aria-current="page">Home</a><a href="/map">District map</a><a href="/legislature">Legislature</a><a href="/about">About</a>
+  </nav>
+</header>
+<main>
+  <div class="hero">
+    <div>
+      <h1>Find the student trustee for your district.</h1>
+      <p class="sub">California has 72 community college districts. Each is run by a locally elected
+      board, and each board seats a student trustee elected by that district's students. Search the map
+      for your district, see who holds the seat, and which seats still need to be filled.</p>
+      <a class="cta" href="/map">Find your district</a>
+      <a class="cta2" href="/legislature">Legislative calendars</a>
+    </div>
+    <img class="st-lockup" src="/brand/logo-full.png" alt="StudentTrustee.net, connections made easy" width="820" height="848">
+  </div>
+
+  <div class="stats">
+    <p class="tally"><b>81</b> student trustees across <b>69</b> of the 72 districts.
+    <b>3</b> districts have no student trustee listed. One is confirmed vacant by the district
+    (Ohlone). Two have not been verified (Lassen, West Kern).
+    <span id="freshness">This information is up to date as of 22 September 2026.</span></p>
+  </div>
+
+  <div class="doors">
+    <a class="door" href="/map"><span class="k">01 &middot; Map</span>
+      <h2 class="dh">District map</h2><p>Explore all 72 districts, shown with their actual boundaries and
+      current student trustees. Search by trustee, district, or college. Districts without a listed
+      trustee appear as vacant.</p></a>
+    <a class="door" href="/legislature"><span class="k">02 &middot; Reference</span>
+      <h2 class="dh">Legislatures</h2><p>Track California's 2026 legislative deadlines and the weeks when the
+      U.S. House and Senate are in session.</p></a>
+    <a class="door" href="/about"><span class="k">03 &middot; Who</span>
+      <h2 class="dh">About</h2><p>Learn who created and maintains this resource, why it was built, and how it
+      helps students navigate community college governance.</p></a>
+  </div>
+</main>
+<footer>Maintained by Nick Bonasera, Student Trustee, Contra Costa Community College District. For site corrections, <a class="fix" href="mailto:studenttrustee@4cd.edu?subject=Student%20Trustee%20Website%20Update">please reach out</a> with updated information.</footer>
+<script>
+/* Freshness line. LAST_VERIFIED is the only thing to bump when the roster is
+   re-checked; everything the visitor sees is derived from it at page load, so
+   the page never claims to be fresher than it actually is. */
+(function(){
+  var LAST_VERIFIED = "2026-09-22";
+  var el = document.getElementById("freshness");
+  if (!el) return;
+  var MONTHS = ["January","February","March","April","May","June",
+                "July","August","September","October","November","December"];
+  var d = new Date(LAST_VERIFIED + "T00:00:00");
+  if (isNaN(d)) return;
+  var today = new Date(); today.setHours(0,0,0,0);
+  var days = Math.round((today - d) / 86400000);
+  var stamp = d.getDate() + " " + MONTHS[d.getMonth()] + " " + d.getFullYear();
+  var txt = "This information is up to date as of " + stamp + ".";
+  if (days >= 60) txt += " Some entries may have changed since, so check with the district before you rely on one.";
+  el.textContent = txt;
+})();
+</script>
+</body>
+</html>

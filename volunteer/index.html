@@ -1,0 +1,810 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+<meta charset="utf-8">
+<meta name="viewport" content="width=device-width, initial-scale=1">
+<title>Bay Area Volunteer Guide</title>
+<meta name="description" content="Volunteer opportunities across the nine Bay Area counties. Contact details, application steps, age rules and time commitments, checked against what each organization publishes.">
+<meta property="og:title" content="Bay Area Volunteer Guide">
+<meta property="og:description" content="Volunteer opportunities across the nine Bay Area counties, verified September 2026.">
+<meta property="og:type" content="website">
+<meta name="theme-color" content="#ffffff">
+<style>
+:root{
+  --ink:#111;
+  --body:#2b2b2b;
+  --muted:#6b6b6b;
+  --faint:#8d8d8d;
+  --rule:#e6e3de;
+  --rule-strong:#111;
+  --bg:#fff;
+  --tint:#f5f4f2;
+  /* refinement tokens */
+  --line:#e6e3de;
+  --line-2:#d2cec7;
+  --line-3:#b6b1a8;
+  --surface:#faf9f7;
+  --r:10px;
+  --sh-1:0 1px 2px rgba(17,17,17,.045);
+  --sh-2:0 1px 2px rgba(17,17,17,.05), 0 6px 16px rgba(17,17,17,.07);
+  --ease:cubic-bezier(.2,.6,.3,1);
+  --focus:#111;
+  --serif:"Iowan Old Style","Palatino Linotype",Palatino,Georgia,"Times New Roman",serif;
+  --sans:-apple-system,BlinkMacSystemFont,"Segoe UI",Roboto,Helvetica,Arial,sans-serif;
+  --gutter:16px;
+  --tap:44px;
+}
+*{box-sizing:border-box}
+html{-webkit-text-size-adjust:100%}
+body{
+  margin:0;background:var(--bg);color:var(--body);
+  font-family:var(--sans);font-size:16px;line-height:1.55;
+  -webkit-font-smoothing:antialiased;overflow-x:hidden;
+}
+.wrap{max-width:960px;margin:0 auto;padding:0 var(--gutter)}
+a{color:var(--ink);text-underline-offset:2px}
+a:focus-visible,button:focus-visible,input:focus-visible,select:focus-visible,summary:focus-visible{
+  outline:2px solid var(--focus);outline-offset:2px;
+}
+.sr{position:absolute;width:1px;height:1px;padding:0;margin:-1px;overflow:hidden;
+  clip:rect(0 0 0 0);white-space:nowrap;border:0}
+.skip{position:absolute;left:-9999px;top:0;background:var(--ink);color:#fff;
+  padding:10px 14px;z-index:100;text-decoration:none}
+.skip:focus{left:8px;top:8px}
+
+/* masthead */
+header.top{border-top:3px solid var(--rule-strong);padding:22px 0 0}
+.eyebrow{font-size:11px;letter-spacing:.14em;text-transform:uppercase;
+  color:var(--muted);margin:0 0 18px}
+h1{font-family:var(--serif);font-weight:600;color:var(--ink);
+  font-size:clamp(32px,7.5vw,54px);line-height:1.05;letter-spacing:-.015em;margin:0 0 14px}
+.lede{font-family:var(--serif);font-size:clamp(17px,2.6vw,20px);line-height:1.45;
+  color:var(--body);max-width:34em;margin:0 0 22px}
+.meta{display:flex;flex-wrap:wrap;gap:8px 18px;font-size:13px;color:var(--muted);
+  padding-bottom:20px;border-bottom:1px solid var(--rule)}
+.meta strong{color:var(--ink);font-weight:600}
+
+/* downloads */
+.dl{display:flex;flex-wrap:wrap;gap:12px;padding:22px 0;border-bottom:1px solid var(--line)}
+.dl a{display:inline-grid;grid-template-columns:auto 1fr auto;align-items:center;
+  gap:13px;text-decoration:none;color:var(--ink);background:var(--surface);
+  border:1px solid var(--line);border-radius:var(--r);padding:11px 15px;
+  min-height:var(--tap);min-width:224px;
+  transition:background .2s var(--ease),border-color .2s var(--ease),
+             box-shadow .2s var(--ease),transform .2s var(--ease)}
+.dl a:hover{background:#fff;border-color:var(--line-2);box-shadow:var(--sh-2);transform:translateY(-1px)}
+.dl a:active{transform:translateY(0);box-shadow:var(--sh-1)}
+.dl .ic{display:block;color:var(--muted);transition:color .2s var(--ease)}
+.dl a:hover .ic{color:var(--ink)}
+.dl .tx{display:flex;flex-direction:column;line-height:1.25;min-width:0}
+.dl .tx b{font-size:14px;font-weight:600;letter-spacing:-.005em}
+.dl .tx span{font-size:11.5px;color:var(--faint);letter-spacing:.01em;margin-top:2px}
+.dl .ar{color:var(--faint);transform:translateY(0);transition:color .2s var(--ease),transform .2s var(--ease)}
+.dl a:hover .ar{color:var(--ink);transform:translateY(2px)}
+@media (max-width:679px){.dl{gap:10px}.dl a{width:100%;min-width:0}}
+
+/* ---------- controls ---------- */
+.controls{background:var(--bg);border-bottom:1px solid var(--line);
+  position:sticky;top:0;z-index:30;
+  box-shadow:0 0 0 100vmax var(--bg);clip-path:inset(0 -100vmax)}
+.bar{display:flex;gap:10px;align-items:stretch;padding:13px 0}
+.search{position:relative;flex:1 1 auto;min-width:0}
+.search .mag{position:absolute;left:14px;top:50%;transform:translateY(-50%);
+  color:var(--faint);pointer-events:none;display:block;
+  transition:color .2s var(--ease)}
+.search input{width:100%;font:inherit;font-size:15.5px;color:var(--ink);background:var(--surface);
+  border:1px solid var(--line);padding:0 44px 0 41px;min-height:var(--tap);
+  border-radius:var(--r);-webkit-appearance:none;appearance:none;
+  transition:background .2s var(--ease),border-color .2s var(--ease),box-shadow .2s var(--ease)}
+.search input::-webkit-search-decoration,
+.search input::-webkit-search-cancel-button{-webkit-appearance:none}
+.search input::placeholder{color:var(--faint)}
+.search input:hover{border-color:var(--line-2)}
+.search input:focus{background:var(--bg);border-color:var(--line-3);
+  box-shadow:0 0 0 3px rgba(17,17,17,.055);outline:none}
+.search:focus-within .mag{color:var(--muted)}
+.clear{position:absolute;right:7px;top:50%;transform:translateY(-50%);
+  border:0;background:none;font:inherit;font-size:17px;line-height:1;color:var(--muted);
+  cursor:pointer;width:30px;height:30px;border-radius:999px;display:none;
+  transition:background .15s var(--ease),color .15s var(--ease)}
+.clear:hover{background:#ecebe7;color:var(--ink)}
+.clear.on{display:block}
+.fbtn{flex:none;font:inherit;font-size:14px;background:var(--bg);color:var(--ink);
+  border:1px solid var(--line);padding:0 16px;min-height:var(--tap);cursor:pointer;
+  border-radius:var(--r);
+  display:inline-flex;align-items:center;gap:8px;white-space:nowrap;
+  transition:background .2s var(--ease),border-color .2s var(--ease),
+             color .2s var(--ease),box-shadow .2s var(--ease)}
+.fbtn:hover{background:var(--surface);border-color:var(--line-2);box-shadow:var(--sh-1)}
+.fbtn[aria-expanded="true"]{background:var(--ink);color:#fff;border-color:var(--ink);box-shadow:none}
+.fbtn .chev{transition:transform .22s var(--ease)}
+.fbtn[aria-expanded="true"] .chev{transform:rotate(180deg)}
+.fbtn .n{display:inline-flex;align-items:center;justify-content:center;
+  min-width:19px;height:19px;padding:0 5px;border-radius:999px;
+  background:var(--ink);color:#fff;font-size:11px;font-weight:600}
+.fbtn[aria-expanded="true"] .n{background:#fff;color:var(--ink)}
+.fbtn .n[hidden]{display:none}
+
+.panel{padding:2px 0 14px}
+.panel[hidden]{display:none}
+.fgrid{display:grid;grid-template-columns:1fr;gap:12px}
+.field label{display:block;font-size:11px;letter-spacing:.1em;text-transform:uppercase;
+  color:var(--faint);margin-bottom:5px}
+.field select,.field input[type=number]{
+  width:100%;font:inherit;font-size:15px;color:var(--ink);background:var(--surface);
+  border:1px solid var(--line);padding:0 12px;min-height:var(--tap);border-radius:var(--r);
+  -webkit-appearance:none;appearance:none;
+  transition:background .2s var(--ease),border-color .2s var(--ease),box-shadow .2s var(--ease)}
+.field select:hover,.field input[type=number]:hover{border-color:var(--line-2)}
+.field select:focus,.field input[type=number]:focus{background:var(--bg);
+  border-color:var(--line-3);box-shadow:0 0 0 3px rgba(17,17,17,.055);outline:none}
+.field select{padding-right:38px;
+  background-image:url("data:image/svg+xml,%3Csvg xmlns='http://www.w3.org/2000/svg' width='12' height='12' viewBox='0 0 24 24' fill='none' stroke='%236b6b6b' stroke-width='2.2' stroke-linecap='round' stroke-linejoin='round'%3E%3Cpath d='m6 9.5 6 6 6-6'/%3E%3C/svg%3E");
+  background-position:right 13px center;background-size:12px 12px;background-repeat:no-repeat}
+.field .hint{font-size:11.5px;color:var(--faint);margin:4px 0 0}
+.toggles{display:flex;flex-wrap:wrap;gap:6px}
+.toggles button{font:inherit;font-size:13px;color:var(--body);background:var(--surface);
+  border:1px solid var(--line);padding:0 15px;min-height:var(--tap);cursor:pointer;
+  border-radius:999px;display:inline-flex;align-items:center;
+  transition:background .18s var(--ease),border-color .18s var(--ease),color .18s var(--ease)}
+.toggles button:hover{border-color:var(--line-2);background:#fff}
+.toggles button[aria-pressed="true"]{background:var(--ink);color:#fff;border-color:var(--ink)}
+.toggles button[aria-pressed="true"]:hover{background:#000}
+
+/* active filter chips */
+.chips{display:flex;flex-wrap:wrap;gap:6px;align-items:center;padding:0 0 10px}
+.chips[hidden]{display:none}
+.chip{display:inline-flex;align-items:center;gap:6px;font-size:12.5px;
+  background:var(--tint);border:1px solid var(--line);color:var(--ink);
+  padding:6px 8px 6px 11px;border-radius:999px}
+.chip button{border:0;background:none;font:inherit;font-size:15px;line-height:1;
+  color:var(--muted);cursor:pointer;padding:2px 3px;min-width:22px;min-height:22px}
+.chip button:hover{color:var(--ink)}
+.chips .clearall{font:inherit;font-size:12.5px;background:none;border:0;
+  color:var(--ink);text-decoration:underline;cursor:pointer;padding:8px 4px;min-height:36px}
+.count{font-size:13px;color:var(--muted);padding:0 0 11px}
+.count b{color:var(--ink);font-weight:600}
+
+/* ---------- results ---------- */
+.group-head{font-family:var(--serif);font-size:12px;letter-spacing:.09em;text-transform:uppercase;
+  color:var(--ink);border-bottom:1px solid var(--rule-strong);
+  padding:26px 0 7px;margin:0;font-weight:600;
+  display:flex;align-items:baseline;justify-content:space-between;gap:12px}
+.group-head span{flex:none;font-family:var(--sans);letter-spacing:0;text-transform:none;
+  color:var(--faint);font-weight:400;font-size:12px}
+article{border-bottom:1px solid var(--rule)}
+article[hidden]{display:none}
+summary{list-style:none;cursor:pointer;padding:16px 0;display:block;position:relative;
+  padding-right:28px;min-height:var(--tap)}
+summary::-webkit-details-marker{display:none}
+summary::after{content:"";position:absolute;right:5px;top:26px;width:8px;height:8px;
+  border-right:1.5px solid var(--muted);border-bottom:1.5px solid var(--muted);
+  transform:rotate(45deg);transition:transform .15s ease}
+details[open] summary::after{transform:rotate(-135deg);top:29px}
+.name{font-family:var(--serif);font-size:19px;line-height:1.25;color:var(--ink);
+  font-weight:600;margin:0 0 3px;letter-spacing:-.01em}
+.where{font-size:13px;color:var(--muted);margin:0}
+.roles{font-size:14px;color:var(--body);margin:7px 0 0;
+  display:-webkit-box;-webkit-line-clamp:2;-webkit-box-orient:vertical;overflow:hidden}
+details[open] .roles{display:none}
+
+/* at-a-glance facts, always visible on the card */
+.facts{display:flex;flex-wrap:wrap;gap:4px 14px;margin:9px 0 0;padding:0;list-style:none}
+.facts li{font-size:12px;color:var(--muted);display:flex;gap:5px;min-width:0}
+.facts b{font-weight:400;color:var(--faint);letter-spacing:.06em;text-transform:uppercase;
+  font-size:10.5px;flex:none;align-self:center}
+.facts .v{color:var(--body)}
+.facts .un{color:var(--faint);font-style:italic}
+details[open] .facts{display:none}
+.tags{margin:9px 0 0;display:flex;flex-wrap:wrap;gap:5px;padding:0;list-style:none}
+.tag{font-size:11px;letter-spacing:.04em;text-transform:uppercase;color:var(--muted);
+  border:1px solid var(--rule);padding:3px 7px}
+details[open] .tags{display:none}
+
+.body{padding:2px 0 22px}
+dl{margin:0;display:grid;grid-template-columns:1fr;gap:0}
+dt{font-size:11px;letter-spacing:.12em;text-transform:uppercase;color:var(--faint);margin-top:13px}
+dd{margin:3px 0 0;font-size:14.5px;color:var(--body);overflow-wrap:anywhere}
+dd.mono{font-variant-numeric:tabular-nums}
+dd.un{color:var(--faint);font-style:italic}
+.apply{display:inline-flex;align-items:center;margin-top:18px;
+  background:var(--ink);color:#fff;border:1px solid var(--ink);
+  padding:0 18px;min-height:var(--tap);font-size:14.5px;text-decoration:none}
+.apply:hover{background:#000}
+.applyurl{display:block;font-size:12px;color:var(--faint);margin-top:7px;overflow-wrap:anywhere}
+
+/* unknown-bucket disclosure */
+.unknowns{border-top:1px solid var(--rule-strong);margin-top:30px}
+.unknowns[hidden]{display:none}
+.unknowns>summary{padding:16px 0}
+.unknowns .uh{font-family:var(--serif);font-size:15px;color:var(--ink);margin:0}
+.unknowns .us{font-size:13px;color:var(--muted);margin:3px 0 0;max-width:44em}
+
+.empty{padding:46px 0;text-align:center;color:var(--muted);font-size:15px}
+.empty button{font:inherit;background:none;border:0;color:var(--ink);
+  text-decoration:underline;cursor:pointer;padding:6px}
+.more{display:block;width:100%;margin:24px 0 0;font:inherit;font-size:14px;
+  background:var(--bg);color:var(--ink);border:1px solid var(--rule-strong);
+  min-height:var(--tap);cursor:pointer;border-radius:var(--r);
+  transition:background .2s var(--ease),color .2s var(--ease),border-color .2s var(--ease)}
+.more:hover{background:var(--ink);color:#fff;border-color:var(--ink)}
+.more[hidden]{display:none}
+
+/* where to search next */
+.next{border-top:3px solid var(--rule-strong);margin-top:40px;padding-top:18px}
+.next h2{font-family:var(--serif);font-size:19px;color:var(--ink);margin:0 0 4px;font-weight:600}
+.next p.intro{font-size:14px;color:var(--muted);margin:0 0 14px;max-width:44em}
+.next ul{list-style:none;margin:0;padding:0;display:grid;gap:0}
+.next li{border-top:1px solid var(--rule);padding:13px 0}
+.next .nm{font-size:15px;color:var(--ink);margin:0 0 2px}
+.next .nd{font-size:13px;color:var(--muted);margin:0 0 6px}
+.next a{font-size:13px;overflow-wrap:anywhere}
+
+footer{border-top:3px solid var(--rule-strong);margin-top:44px;padding:20px 0 56px;
+  font-size:12.5px;color:var(--muted)}
+footer p{margin:0 0 7px;max-width:44em}
+footer a{color:var(--muted)}
+
+/* ---------- identity ---------- */
+.st-parent{display:inline-block;line-height:0;margin-bottom:20px;
+  transition:opacity .2s var(--ease)}
+.st-parent img{display:block;height:19px;width:auto}
+.st-parent:hover{opacity:.62}
+.masthead{display:block}
+.mast-mark{display:none}
+.st-sign{display:block;width:216px;margin:40px auto 4px;line-height:0;
+  transition:opacity .2s var(--ease)}
+.st-sign img{display:block;width:100%;height:auto}
+.st-sign:hover{opacity:.62}
+@media (min-width:940px){
+  .masthead{display:grid;grid-template-columns:minmax(0,1fr) 310px;
+    gap:34px;align-items:center}
+  .mast-mark{display:block;line-height:0}
+  .mast-mark img{display:block;width:100%;height:auto}
+}
+
+@media (min-width:680px){
+  :root{--gutter:32px}
+  header.top{padding-top:34px}
+  .fgrid{grid-template-columns:repeat(2,1fr);gap:12px 14px}
+  .fgrid .wide{grid-column:1 / -1}
+  dl{grid-template-columns:132px 1fr;gap:0 20px}
+  dt{margin-top:11px;text-align:left;padding-top:3px}
+  dd{margin-top:11px}
+  .next ul{grid-template-columns:repeat(2,1fr);gap:0 28px}
+}
+@media (min-width:980px){
+  .fgrid{grid-template-columns:repeat(3,1fr)}
+}
+@media (prefers-reduced-motion:reduce){*{transition:none!important}}
+@media print{.controls,.dl,.more{display:none}details{page-break-inside:avoid}}
+
+/* ---- brand logo integration (added; nothing above this line was changed) ---- */
+.st-parent{display:inline-block;margin:0 0 18px;line-height:0;text-decoration:none}
+.st-parent img{display:block;height:20px;width:auto}
+.st-parent:focus-visible{outline:2px solid var(--focus);outline-offset:3px}
+@media (max-width:640px){.st-parent img{height:17px}}
+</style>
+<meta property="og:image" content="https://volunteer.studenttrustee.net/brand/og-card.png">
+<meta property="og:image:width" content="1200">
+<meta property="og:image:height" content="630">
+<meta property="og:url" content="https://volunteer.studenttrustee.net/">
+<meta name="twitter:card" content="summary_large_image">
+<link rel="icon" href="/brand/poppy-p6.ico" sizes="48x48">
+<link rel="icon" href="/brand/poppy-p6.svg" sizes="any" type="image/svg+xml">
+<link rel="apple-touch-icon" sizes="180x180" href="/brand/poppy-180-p6.png">
+<link rel="mask-icon" href="/brand/poppy-mask-p6.svg" color="#CC480D">
+<link rel="manifest" href="/site-p6.webmanifest">
+</head>
+<body>
+<a class="skip" href="#list">Skip to listings</a>
+<div class="wrap">
+
+<header class="top">
+  <a class="st-parent" href="https://studenttrustee.net" aria-label="StudentTrustee.net"><img src="brand/logo-wordmark.png" alt="StudentTrustee.net" width="1015" height="127"></a>
+  <div class="masthead">
+  <div class="mast-text">
+  <p class="eyebrow">Bay Area Volunteer Guide &middot; September 2026</p>
+  <h1>Volunteer opportunities across the Bay&nbsp;Area</h1>
+  <p class="lede">Organizations in nine counties, each one checked against what it publishes about itself. Where something is not published, this guide says so rather than filling the gap.</p>
+  </div>
+  <div class="mast-mark" aria-hidden="true"><img src="brand/goldengate-mark.png" alt="" width="900" height="449" loading="lazy"></div>
+  </div>
+  <div class="meta">
+    <span><strong id="mOrgs">0</strong> organizations</span>
+    <span><strong id="mCats">0</strong> kinds of work</span>
+    <span><strong>9</strong> counties</span>
+    <span>Verified September 2026</span>
+  </div>
+</header>
+
+<div class="dl">
+  <a href="bay-area-volunteer-directory.pdf" download><svg class="ic" width="20" height="20" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="1.6" stroke-linecap="round" stroke-linejoin="round" aria-hidden="true"><path d="M14 3v4a1 1 0 0 0 1 1h4"/><path d="M19 8.5V19a2 2 0 0 1-2 2H7a2 2 0 0 1-2-2V5a2 2 0 0 1 2-2h6.5Z"/><path d="M9 13h6M9 16.5h4"/></svg><span class="tx"><b>Directory PDF</b><span>78 pages</span></span><svg class="ar" width="16" height="16" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="1.7" stroke-linecap="round" stroke-linejoin="round" aria-hidden="true"><path d="M12 4.5v12"/><path d="M6.75 11.25 12 16.5l5.25-5.25"/><path d="M5 20h14"/></svg></a>
+  <a href="bay-area-volunteer-how-to-apply.pdf" download><svg class="ic" width="20" height="20" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="1.6" stroke-linecap="round" stroke-linejoin="round" aria-hidden="true"><path d="M14 3v4a1 1 0 0 0 1 1h4"/><path d="M19 8.5V19a2 2 0 0 1-2 2H7a2 2 0 0 1-2-2V5a2 2 0 0 1 2-2h6.5Z"/><path d="M9 13h6M9 16.5h4"/></svg><span class="tx"><b>How to Apply PDF</b><span>119 pages</span></span><svg class="ar" width="16" height="16" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="1.7" stroke-linecap="round" stroke-linejoin="round" aria-hidden="true"><path d="M12 4.5v12"/><path d="M6.75 11.25 12 16.5l5.25-5.25"/><path d="M5 20h14"/></svg></a>
+</div>
+
+<div class="controls">
+  <div class="bar">
+    <div class="search">
+      <svg class="mag" width="17" height="17" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="1.8" stroke-linecap="round" aria-hidden="true"><circle cx="11" cy="11" r="6.5"/><path d="m16 16 4.5 4.5"/></svg>
+      <input id="q" type="search" autocomplete="off" spellcheck="false"
+             placeholder="Search name, city, or kind of work" aria-label="Search organizations">
+      <button class="clear" id="clear" type="button" aria-label="Clear search">&times;</button>
+    </div>
+    <button class="fbtn" id="fbtn" type="button" aria-expanded="false" aria-controls="panel">
+      Filters <span class="n" id="fcount" hidden>0</span><svg class="chev" width="13" height="13" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round" aria-hidden="true"><path d="m6 9.5 6 6 6-6"/></svg>
+    </button>
+  </div>
+
+  <div class="panel" id="panel" hidden>
+    <div class="fgrid">
+      <div class="field">
+        <label for="cat">Kind of work</label>
+        <select id="cat"><option value="">All kinds of work</option></select>
+      </div>
+      <div class="field">
+        <label for="cty">County</label>
+        <select id="cty"><option value="">All counties</option></select>
+      </div>
+      <div class="field">
+        <label for="age">Your age</label>
+        <input id="age" type="number" inputmode="numeric" min="5" max="99" placeholder="e.g. 16">
+        <p class="hint">Shows groups whose published minimum you meet.</p>
+      </div>
+      <div class="field">
+        <label for="time">Time commitment</label>
+        <select id="time">
+          <option value="">Any commitment</option>
+          <option value="oneoff">One-off or single day</option>
+          <option value="flexible">Flexible or as available</option>
+          <option value="recurring">Regular or recurring shift</option>
+        </select>
+      </div>
+      <div class="field">
+        <label for="req">What's involved</label>
+        <select id="req">
+          <option value="">Any requirements</option>
+          <option value="nobg">No background check mentioned</option>
+          <option value="bg">Background check mentioned</option>
+          <option value="orient">Orientation or training</option>
+          <option value="interview">Interview</option>
+          <option value="health">Health or TB check</option>
+        </select>
+      </div>
+      <div class="field wide">
+        <label>Who is going</label>
+        <div class="toggles">
+          <button type="button" data-flag="groups" aria-pressed="false">Accepts groups</button>
+          <button type="button" data-flag="remote" aria-pressed="false">Can be done remotely</button>
+        </div>
+      </div>
+    </div>
+  </div>
+
+  <div class="chips" id="chips" hidden></div>
+  <p class="count" id="count"></p>
+</div>
+
+<main id="list" aria-live="polite"></main>
+
+<section class="next" id="next" hidden>
+  <h2>Where to search next</h2>
+  <p class="intro">These are search platforms and referral bodies rather than individual organizations. Use them when nothing above fits, or when you are looking outside the nine counties.</p>
+  <ul id="nextList"></ul>
+</section>
+
+<footer>
+  <p>Every figure comes from what each organization publishes. &ldquo;Not stated&rdquo; means the organization does not publish that detail, so nothing has been invented to fill the space. Those are the questions worth leading with on the phone.</p>
+  <p>Four organizations do two kinds of work and are listed under both, which is why there are slightly more listings than organizations.</p>
+  <p>Volunteer listings go stale quietly. Both PDFs include a page of organizations that older Bay Area lists still name, with what actually happened to them. Check any existing list against it.</p>
+  <p>Compiled and published by Nicholas Bonasera. Corrections are welcome at <a href="mailto:studenttrustee@4cd.edu">studenttrustee@4cd.edu</a>.</p>
+  <a class="st-sign" href="https://studenttrustee.net" aria-label="StudentTrustee.net"><img src="brand/logo-lockup.png" alt="StudentTrustee.net, connections made easy" width="1012" height="182" loading="lazy"></a>
+</footer>
+
+</div>
+
+<script src="data.js"></script>
+<script>
+(function () {
+  "use strict";
+  var ALL = window.VOLUNTEER_DATA || [];
+  var COUNTIES = ["Alameda","Contra Costa","Marin","Napa","San Francisco",
+                  "San Mateo","Santa Clara","Solano","Sonoma"];
+  var NEXT_CAT = "Where to search next";
+  var PAGE = 40;
+
+  var DATA = ALL.filter(function (r) { return r.category !== NEXT_CAT; });
+  var NEXTS = ALL.filter(function (r) { return r.category === NEXT_CAT; });
+
+  var el = function (id) { return document.getElementById(id); };
+  var list = el("list"), q = el("q"), clearBtn = el("clear"),
+      catSel = el("cat"), ctySel = el("cty"), ageInp = el("age"),
+      timeSel = el("time"), reqSel = el("req"),
+      countEl = el("count"), chipsEl = el("chips"),
+      fbtn = el("fbtn"), panel = el("panel"), fcount = el("fcount");
+  var toggleBtns = [].slice.call(document.querySelectorAll(".toggles button"));
+
+  function esc(s) {
+    return String(s == null ? "" : s)
+      .replace(/&/g,"&amp;").replace(/</g,"&lt;").replace(/>/g,"&gt;").replace(/"/g,"&quot;");
+  }
+  function href(u) {
+    u = String(u || "").trim();
+    if (!u) return "";
+    return /^https?:\/\//i.test(u) ? u : "https://" + u;
+  }
+  function stated(v) { return !!(v && !/^not stated\b/i.test(String(v).trim())); }
+
+  /* ---------- derivation: every value below is read from published text ---------- */
+  function minAge(rec) {
+    var a = (rec.age || "").toLowerCase();
+    if (!stated(rec.age)) return null;
+    if (/any age|all ages|children of any age|no minimum age|no minimum stated/.test(a)) return 0;
+    var nums = (a.match(/\b(\d{1,2})\b/g) || []).map(Number)
+      .filter(function (x) { return x >= 5 && x <= 80; });
+    return nums.length ? Math.min.apply(null, nums) : null;
+  }
+  DATA.forEach(function (r, i) {
+    var t = (r.time || ""), g = (r.groups || ""),
+        sc = (r.screening || "") + " " + (r.steps || ""),
+        hay = ((r.roles||"")+" "+(r.notes||"")+" "+t).toLowerCase();
+
+    r._i = i;
+    r._ageMin = minAge(r);
+    r._ageKnown = r._ageMin !== null;
+
+    r._timeKnown = stated(t);
+    r._oneoff    = /one-time|one off|single[- ]day|drop-?in|single shift|day of service|work part(y|ies)|event-based/i.test(t);
+    r._flexible  = /flexible|as available|as little as|no fixed|your own schedule|when you can|no minimum/i.test(t);
+    r._recurring = /weekly|per week|each week|recurring|regular shift|biweekly|bi-weekly|monthly|per month|shift-based/i.test(t);
+
+    r._groupsKnown = stated(g);
+    r._groups = /^\s*yes\b/i.test(g) || (/group|team|corporate|club|company/i.test(g) && !/^\s*no\b/i.test(g));
+
+    r._remote = /remote|from home|virtual|online|work-from-home|by zoom/.test(hay);
+
+    r._bg       = /background check|live ?scan|livescan|fingerprint|criminal/i.test(sc);
+    r._orient   = /orientation|training|onboarding|info session|volunteer class/i.test(sc);
+    r._intv     = /interview/i.test(sc);
+    r._health   = /\bTB\b|tuberculosis|vaccin|immuniz|health screen/i.test(sc);
+
+    r._counties = COUNTIES.filter(function (c) { return (r.county||"").indexOf(c) >= 0; });
+    r._regional = r._counties.length === 0;
+
+    r._hay = [r.name,r.place,r.county,r.category,r.roles,r.notes,r.applyAt].join(" ").toLowerCase();
+  });
+
+  /* ---------- populate selects ---------- */
+  var cats = [];
+  DATA.forEach(function (r) { if (cats.indexOf(r.category) < 0) cats.push(r.category); });
+  cats.sort(function (a,b) {
+    return DATA.filter(function(r){return r.category===b;}).length -
+           DATA.filter(function(r){return r.category===a;}).length;
+  });
+  cats.forEach(function (c) {
+    var n = DATA.filter(function (r) { return r.category === c; }).length;
+    catSel.insertAdjacentHTML("beforeend",
+      '<option value="'+esc(c)+'">'+esc(c)+" ("+n+")</option>");
+  });
+  COUNTIES.forEach(function (c) {
+    var n = DATA.filter(function (r) { return r._counties.indexOf(c) >= 0; }).length;
+    if (!n) return;
+    ctySel.insertAdjacentHTML("beforeend",
+      '<option value="'+esc(c)+'">'+esc(c)+" ("+n+")</option>");
+  });
+  var regN = DATA.filter(function (r) { return r._regional; }).length;
+  if (regN) ctySel.insertAdjacentHTML("beforeend",
+    '<option value="__reg">Regional and national ('+regN+")</option>");
+
+  var UNIQUE = new Set(DATA.map(function(r){return r.name;})).size;
+  el("mOrgs").textContent = UNIQUE;
+  el("mCats").textContent = cats.length;
+
+  /* ---------- render cards once ---------- */
+  function factItem(label, value, known) {
+    if (known) return '<li><b>'+label+'</b><span class="v">'+esc(value)+"</span></li>";
+    return '<li><b>'+label+'</b><span class="un">not stated</span></li>';
+  }
+  var html = [];
+  DATA.forEach(function (r) {
+    var u = href(r.applyAt);
+
+    var ageTxt = r._ageMin === null ? "" :
+      (r._ageMin === 0 ? "any age" : r._ageMin + "+");
+    var timeTxt = r._oneoff ? "one-off" : r._recurring ? "regular shift" :
+                  r._flexible ? "flexible" : (r._timeKnown ? "see details" : "");
+    var grpTxt = r._groupsKnown ? (r._groups ? "yes" : "no") : "";
+
+    var facts = "<ul class='facts'>"
+      + factItem("Age", ageTxt, r._ageKnown)
+      + factItem("Time", timeTxt, r._timeKnown)
+      + factItem("Groups", grpTxt, r._groupsKnown)
+      + "</ul>";
+
+    var tags = [];
+    if (r._remote) tags.push("Remote possible");
+    if (r._bg) tags.push("Background check");
+    if (r._orient) tags.push("Orientation or training");
+    var tagHtml = tags.length ? "<ul class='tags'>" + tags.map(function (t) {
+      return "<li class='tag'>"+t+"</li>"; }).join("") + "</ul>" : "";
+
+    var rows = "";
+    function row(label, val) {
+      if (val == null || val === "") return;
+      var un = !stated(val);
+      rows += "<dt>"+label+"</dt><dd"+(un?' class="un"':"")+">"+esc(val)+"</dd>";
+    }
+    function rowMono(label, val) {
+      if (!val) return;
+      rows += "<dt>"+label+'</dt><dd class="mono">'+esc(val)+"</dd>";
+    }
+    row("What volunteers do", r.roles);
+    row("Who can volunteer", r.age);
+    row("Time commitment", r.time);
+    row("Groups", r.groups);
+    row("How to apply", r.steps);
+    row("Screening", r.screening);
+    rowMono("Contact", r.contact);
+    if (stated(r.notes)) row("Worth knowing", r.notes);
+
+    html.push(
+      '<article data-i="'+r._i+'"><details><summary>'
+        + '<p class="name">'+esc(r.name)+"</p>"
+        + '<p class="where">'+esc(r.place)+(r.place && r.county ? " &middot; " : "")+esc(r.county)+"</p>"
+        + (r.roles ? '<p class="roles">'+esc(r.roles)+"</p>" : "")
+        + facts + tagHtml
+      + '</summary><div class="body"><dl>'+rows+"</dl>"
+        + (u ? '<a class="apply" href="'+esc(u)+'" target="_blank" rel="noopener noreferrer">'
+               + "Apply at "+esc(r.name)+"</a>"
+               + '<span class="applyurl">'+esc(r.applyAt)+"</span>" : "")
+      + "</div></details></article>"
+    );
+  });
+  html.push('<details class="unknowns" id="unknowns"><summary>'
+    + '<p class="uh"><span id="unN">0</span> more do not publish this detail</p>'
+    + '<p class="us">These organizations match your other filters. They simply do not state this one, so they are set aside rather than ruled out.</p>'
+    + "</summary><div id='unBody'></div></details>");
+  html.push('<p class="empty" id="empty" hidden>Nothing matches those filters. '
+    + '<button type="button" id="reset">Clear them</button></p>');
+  html.push('<button class="more" id="more" type="button" hidden></button>');
+  list.innerHTML = html.join("");
+
+  var arts = [].slice.call(list.querySelectorAll("article"));
+  var byIndex = {}; arts.forEach(function (a) { byIndex[+a.dataset.i] = a; });
+  var emptyEl = el("empty"), moreBtn = el("more"),
+      unknowns = el("unknowns"), unBody = el("unBody"), unN = el("unN");
+  var flags = { groups:false, remote:false };
+  var shownLimit = PAGE;
+
+  /* ---------- where to search next ---------- */
+  if (NEXTS.length) {
+    el("next").hidden = false;
+    el("nextList").innerHTML = NEXTS.map(function (r) {
+      var u = href(r.applyAt);
+      return "<li><p class='nm'>"+esc(r.name)+"</p>"
+        + (stated(r.roles) ? "<p class='nd'>"+esc(r.roles)+"</p>" : "")
+        + (u ? "<a href='"+esc(u)+"' target='_blank' rel='noopener noreferrer'>"+esc(r.applyAt)+"</a>" : "")
+        + "</li>";
+    }).join("");
+  }
+
+  /* ---------- filter state in the URL ---------- */
+  function readURL() {
+    var p = new URLSearchParams(location.search);
+    q.value = p.get("q") || "";
+    catSel.value = p.get("cause") || "";
+    ctySel.value = p.get("county") || "";
+    ageInp.value = p.get("age") || "";
+    timeSel.value = p.get("time") || "";
+    reqSel.value = p.get("req") || "";
+    flags.groups = p.get("groups") === "1";
+    flags.remote = p.get("remote") === "1";
+    toggleBtns.forEach(function (b) {
+      b.setAttribute("aria-pressed", flags[b.dataset.flag] ? "true" : "false");
+    });
+  }
+  function writeURL() {
+    var p = new URLSearchParams();
+    if (q.value.trim()) p.set("q", q.value.trim());
+    if (catSel.value) p.set("cause", catSel.value);
+    if (ctySel.value) p.set("county", ctySel.value);
+    if (ageInp.value) p.set("age", ageInp.value);
+    if (timeSel.value) p.set("time", timeSel.value);
+    if (reqSel.value) p.set("req", reqSel.value);
+    if (flags.groups) p.set("groups", "1");
+    if (flags.remote) p.set("remote", "1");
+    var s = p.toString();
+    history.replaceState(null, "", s ? "?" + s : location.pathname);
+  }
+
+  /* ---------- matching ---------- */
+  function matchHard(r) {           // filters with no "unknown" ambiguity
+    if (catSel.value && r.category !== catSel.value) return false;
+    if (ctySel.value === "__reg") { if (!r._regional) return false; }
+    else if (ctySel.value && r._counties.indexOf(ctySel.value) < 0) return false;
+    if (flags.groups && !r._groups) return false;
+    if (flags.remote && !r._remote) return false;
+    var rq = reqSel.value;
+    if (rq === "bg" && !r._bg) return false;
+    if (rq === "nobg" && r._bg) return false;
+    if (rq === "orient" && !r._orient) return false;
+    if (rq === "interview" && !r._intv) return false;
+    if (rq === "health" && !r._health) return false;
+    var text = q.value.trim().toLowerCase();
+    if (text) {
+      var words = text.split(/\s+/);
+      for (var i = 0; i < words.length; i++) {
+        if (r._hay.indexOf(words[i]) < 0) return false;
+      }
+    }
+    return true;
+  }
+  // returns "yes" | "no" | "unknown"
+  function matchSoft(r) {
+    var age = parseInt(ageInp.value, 10);
+    var wantAge = !isNaN(age);
+    var wantTime = !!timeSel.value;
+    if (!wantAge && !wantTime) return "yes";
+    var unknown = false;
+    if (wantAge) {
+      if (!r._ageKnown) unknown = true;
+      else if (r._ageMin > age) return "no";
+    }
+    if (wantTime) {
+      if (!r._timeKnown) unknown = true;
+      else {
+        var ok = timeSel.value === "oneoff" ? r._oneoff
+               : timeSel.value === "flexible" ? r._flexible
+               : timeSel.value === "recurring" ? r._recurring : true;
+        if (!ok) return "no";
+      }
+    }
+    return unknown ? "unknown" : "yes";
+  }
+
+  function activeChips() {
+    var out = [];
+    if (q.value.trim()) out.push(["q", 'Search: "'+q.value.trim()+'"']);
+    if (catSel.value) out.push(["cause", catSel.value]);
+    if (ctySel.value) out.push(["county",
+      ctySel.value === "__reg" ? "Regional and national" : ctySel.value + " County"]);
+    if (ageInp.value) out.push(["age", "Age " + ageInp.value]);
+    if (timeSel.value) out.push(["time",
+      timeSel.selectedOptions[0] ? timeSel.selectedOptions[0].textContent : timeSel.value]);
+    if (reqSel.value) out.push(["req",
+      reqSel.selectedOptions[0] ? reqSel.selectedOptions[0].textContent : reqSel.value]);
+    if (flags.groups) out.push(["groups", "Accepts groups"]);
+    if (flags.remote) out.push(["remote", "Can be done remotely"]);
+    return out;
+  }
+  function clearOne(key) {
+    if (key === "q") q.value = "";
+    else if (key === "cause") catSel.value = "";
+    else if (key === "county") ctySel.value = "";
+    else if (key === "age") ageInp.value = "";
+    else if (key === "time") timeSel.value = "";
+    else if (key === "req") reqSel.value = "";
+    else if (key === "groups" || key === "remote") {
+      flags[key] = false;
+      toggleBtns.forEach(function (b) {
+        if (b.dataset.flag === key) b.setAttribute("aria-pressed", "false");
+      });
+    }
+    apply();
+  }
+  function clearAll() {
+    q.value = ""; catSel.value = ""; ctySel.value = "";
+    ageInp.value = ""; timeSel.value = ""; reqSel.value = "";
+    flags.groups = flags.remote = false;
+    toggleBtns.forEach(function (b) { b.setAttribute("aria-pressed", "false"); });
+    shownLimit = PAGE;
+    apply();
+  }
+
+  function apply(resetPage) {
+    if (resetPage !== false) shownLimit = PAGE;
+    var yes = [], unknown = [];
+    DATA.forEach(function (r) {
+      if (!matchHard(r)) return;
+      var s = matchSoft(r);
+      if (s === "yes") yes.push(r);
+      else if (s === "unknown") unknown.push(r);
+    });
+
+    // place cards: matches in the main list, unknowns inside the disclosure
+    var frag = document.createDocumentFragment();
+    yes.slice(0, shownLimit).forEach(function (r) {
+      var a = byIndex[r._i]; a.hidden = false; frag.appendChild(a);
+    });
+    list.insertBefore(frag, unknowns);
+
+    var ufrag = document.createDocumentFragment();
+    unknown.forEach(function (r) { var a = byIndex[r._i]; a.hidden = false; ufrag.appendChild(a); });
+    unBody.innerHTML = "";
+    unBody.appendChild(ufrag);
+
+    // hide everything not placed
+    var placed = {};
+    yes.slice(0, shownLimit).forEach(function (r) { placed[r._i] = 1; });
+    unknown.forEach(function (r) { placed[r._i] = 1; });
+    arts.forEach(function (a) { if (!placed[+a.dataset.i]) a.hidden = true; });
+
+    unknowns.hidden = unknown.length === 0;
+    unN.textContent = unknown.length;
+
+    var chips = activeChips();
+    chipsEl.hidden = chips.length === 0;
+    chipsEl.innerHTML = chips.length
+      ? chips.map(function (c) {
+          return '<span class="chip">'+esc(c[1])
+               + '<button type="button" data-k="'+c[0]+'" aria-label="Remove '+esc(c[1])+'">&times;</button></span>';
+        }).join("") + '<button class="clearall" type="button" id="clearall">Clear all</button>'
+      : "";
+
+    fcount.hidden = chips.length === 0;
+    fcount.textContent = chips.length;
+
+    emptyEl.hidden = !(yes.length === 0 && unknown.length === 0);
+    clearBtn.classList.toggle("on", !!q.value.trim());
+
+    var remaining = yes.length - Math.min(shownLimit, yes.length);
+    moreBtn.hidden = remaining <= 0;
+    moreBtn.textContent = "Show " + Math.min(PAGE, remaining) + " more of " + yes.length;
+
+    countEl.innerHTML = chips.length
+      ? "<b>"+yes.length+"</b> match"+(yes.length===1?"":"es")
+        + (unknown.length ? ", "+unknown.length+" set aside below" : "")
+      : "<b>"+DATA.length+"</b> listings from "+UNIQUE+" organizations, verified September 2026";
+
+    writeURL();
+  }
+
+  /* ---------- events ---------- */
+  var timer;
+  q.addEventListener("input", function () {
+    clearTimeout(timer); timer = setTimeout(apply, 110);
+  });
+  clearBtn.addEventListener("click", function () { q.value = ""; q.focus(); apply(); });
+  [catSel, ctySel, timeSel, reqSel].forEach(function (s) {
+    s.addEventListener("change", apply);
+  });
+  ageInp.addEventListener("input", function () {
+    clearTimeout(timer); timer = setTimeout(apply, 160);
+  });
+  toggleBtns.forEach(function (b) {
+    b.addEventListener("click", function () {
+      var f = b.dataset.flag;
+      flags[f] = !flags[f];
+      b.setAttribute("aria-pressed", flags[f] ? "true" : "false");
+      apply();
+    });
+  });
+  chipsEl.addEventListener("click", function (e) {
+    var b = e.target.closest("button");
+    if (!b) return;
+    if (b.id === "clearall") clearAll();
+    else if (b.dataset.k) clearOne(b.dataset.k);
+  });
+  list.addEventListener("click", function (e) {
+    if (e.target && e.target.id === "reset") clearAll();
+  });
+  moreBtn.addEventListener("click", function () {
+    shownLimit += PAGE;
+    apply(false);
+  });
+  fbtn.addEventListener("click", function () {
+    var open = fbtn.getAttribute("aria-expanded") === "true";
+    fbtn.setAttribute("aria-expanded", open ? "false" : "true");
+    panel.hidden = open;
+  });
+
+  readURL();
+  if (activeChips().length) {
+    fbtn.setAttribute("aria-expanded", "true");
+    panel.hidden = false;
+  }
+  apply();
+})();
+</script>
+</body>
+</html>

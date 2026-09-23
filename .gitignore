@@ -1,0 +1,10 @@
+# macOS
+.DS_Store
+._*
+
+# folders kept on disk but deliberately out of the repo
+_superseded/
+
+# local build scratch
+*.zip
+node_modules/
